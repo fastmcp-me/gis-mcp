@@ -10,6 +10,12 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 >
 > Version 0.1.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
 
+## 🎥 Demo
+
+<div align="center">
+  <img src="docs/demo.gif" alt="GIS MCP Server Demo" width="800"/>
+</div>
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
