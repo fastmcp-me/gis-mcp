@@ -1,5 +1,9 @@
 # GIS MCP Server
 
+<div align="center">
+  <img src="docs/gis-mcp.png" alt="GIS MCP Server Logo" width="300"/>
+</div>
+
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries (Currently Shapely and PyProj supported), enabling AI assistants to perform geospatial operations and transformations.
 
 > Alpha
@@ -170,6 +174,13 @@ To use the pip installation with Claude or Cursor, add the following configurati
 }
 ```
 
+After configuration:
+
+1. Make sure to replace `YourUsername` with your actual username
+2. For development installation, replace `/path/to/gis-mcp` with the actual path to your project
+3. Restart your IDE to apply the changes
+4. You can now use all GIS operations through Claude or Cursor!
+
 ### 🛠️ Development Installation
 
 For contributors and developers:
@@ -265,7 +276,7 @@ After configuration:
 3. Restart your IDE to apply the changes
 4. You can now use all GIS operations through Claude or Cursor!
 
-## ��️ Available Tools
+## 🛠️ Available Tools
 
 ### Shapely Operations
 
@@ -392,7 +403,7 @@ Parameters: {
 
 ## 🔮 Planned Features
 
-- Add support for more GIS libraries
+- Add support for more GIS libraries - GDAL/OGR
 - Implement advanced spatial indexing
 - Add support for raster operations
 - Implement network analysis capabilities
