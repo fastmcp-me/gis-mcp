@@ -15,7 +15,6 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
-  - [Docker Installation](#-docker-installation)
   - [pip Installation](#-pip-installation)
   - [Development Installation](#-development-installation)
 - [Available Tools](#-available-tools)
@@ -55,45 +54,6 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 ## 🛠️ Installation
 
 Choose the installation method that best suits your needs:
-
-### 🐳 Docker Installation
-
-The Docker installation is the quickest and most isolated way to run the GIS MCP server:
-
-```bash
-docker pull mahdin75/gis-mcp
-docker run -d mahdin75/gis-mcp
-```
-
-#### Docker Configuration
-
-To use the Docker installation with Claude or Cursor, add the following configuration:
-
-**Claude Desktop:**
-
-```json
-{
-  "mcpServers": {
-    "gis-mcp": {
-      "command": "docker",
-      "args": ["run", "--rm", "mahdin75/gis-mcp"]
-    }
-  }
-}
-```
-
-**Cursor IDE** (create `.cursor/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "gis-mcp": {
-      "command": "docker",
-      "args": ["run", "--rm", "mahdin75/gis-mcp"]
-    }
-  }
-}
-```
 
 ### 📦 pip Installation
 
