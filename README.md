@@ -9,6 +9,10 @@
 
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries (Currently Shapely and PyProj supported), enabling AI assistants to perform geospatial operations and transformations.
 
+<a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
+</a>
+
 > Alpha
 >
 > Version 0.2.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
