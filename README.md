@@ -12,22 +12,31 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 ## 📋 Table of Contents
 
-- Features
-- Prerequisites
-- Installation
-  - Docker Installation
-  - pip Installation
-  - Development Installation
-- Available Tools
-  - Shapely Operations
-  - PyProj Operations
-- Client Development
-- Planned Features
-- Contributing
-- License
-- Related Projects
-- Support
-- Badges
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+  - [Docker Installation](#-docker-installation)
+  - [pip Installation](#-pip-installation)
+  - [Development Installation](#-development-installation)
+- [Available Tools](#-available-tools)
+  - [Shapely Operations](#shapely-operations)
+    - [Basic Operations](#basic-operations)
+    - [Geometric Properties](#geometric-properties)
+    - [Transformations](#transformations)
+    - [Advanced Operations](#advanced-operations)
+    - [Measurements](#measurements)
+    - [Validation and Simplification](#validation-and-simplification)
+  - [PyProj Operations](#pyproj-operations)
+    - [Coordinate Transformations](#coordinate-transformations)
+    - [CRS Information](#crs-information)
+    - [Geodetic Calculations](#geodetic-calculations)
+- [Client Development](#-client-development)
+- [Planned Features](#-planned-features)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Related Projects](#-related-projects)
+- [Support](#-support)
+- [Badges](#-badges)
 
 ## 🚀 Features
 
