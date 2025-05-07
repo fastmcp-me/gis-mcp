@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [
     {name = "Mahdi Nazari Ashani"},
-    {name = "GeoServer MCP Contributors"},
+    {name = "GIS MCP Contributors"},
 ]
 keywords = ["mcp", "gis", "llm", "geospatial", "ogc", "pyproj", "shapely"]
 
@@ -33,7 +33,7 @@ dependencies = [
 
 
 [project.scripts]
-geoserver-mcp = "geoserver_mcp.main:main"
+gis-mcp = "gis_mcp.main:main"
 
 [tool.hatch.metadata]
 allow-direct-references = true
