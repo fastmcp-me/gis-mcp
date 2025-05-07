@@ -430,7 +430,7 @@ For support, please open an issue in the GitHub repository.
 <div align="center">
 <!-- Glama AI will be added here -->
   <br/><br/><br/>
-  <a href="https://mcp.so/server/GIS%20MCP%20Server/mahdin75">
+  <a href="https://mcp.so/server/gis-mcp-server/mahdin75">
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
   </a>
 </div>
