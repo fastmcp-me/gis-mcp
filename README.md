@@ -1,7 +1,5 @@
 # GIS MCP Server
 
-[![smithery badge](https://smithery.ai/badge/@mahdin75/gis-mcp)](https://smithery.ai/server/@mahdin75/gis-mcp)
-
 <div align="center">
   <h3>✨ Want to perform accurate geospatial analysis in your chatbot? ✨</h3>
   <p><strong>Install GIS-MCP and transform your AI's spatial capabilities!</strong></p>
@@ -14,6 +12,8 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 <a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
 </a>
+
+[![smithery badge](https://smithery.ai/badge/@mahdin75/gis-mcp)](https://smithery.ai/server/@mahdin75/gis-mcp)
 
 > Alpha
 >
