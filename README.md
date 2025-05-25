@@ -13,6 +13,8 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
 </a>
 
+[![smithery badge](https://smithery.ai/badge/@mahdin75/gis-mcp)](https://smithery.ai/server/@mahdin75/gis-mcp)
+
 > Alpha
 >
 > Version 0.2.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
@@ -67,6 +69,14 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 ## 🛠️ Installation
 
 Choose the installation method that best suits your needs:
+
+### Installing via Smithery
+
+To install GIS MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mahdin75/gis-mcp):
+
+```bash
+npx -y @smithery/cli install @mahdin75/gis-mcp --client claude
+```
 
 ### 📦 pip Installation
 
