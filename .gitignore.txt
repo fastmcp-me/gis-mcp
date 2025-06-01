@@ -1,0 +1,3 @@
+.cursor/
+.ipynb_checkpoints/
+.venv/
