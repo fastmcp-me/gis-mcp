@@ -132,6 +132,15 @@ def get_geodetic_operations() -> Dict[str, List[str]]:
         ]
     }
 
+@mcp.resource("geopandas/io")
+def get_geopandas_io() -> Dict[str, List[str]]:
+    """List available GeoPandas I/O operations."""
+    return {
+        "operations": [
+            "read_file_gpd"
+        ]
+    }
+
 # Tool implementations
 @mcp.tool()
 def buffer(geometry: str, distance: float, resolution: int = 16, 
@@ -761,6 +770,35 @@ def get_geocentric_crs(coordinates: List[float]) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Error getting geocentric CRS: {str(e)}")
         raise ValueError(f"Failed to get geocentric CRS: {str(e)}")
+
+from typing import Dict, Any
+import geopandas as gpd
+import pandas as pd
+import os
+
+@mcp.tool()
+def read_file_gpd(file_path: str) -> Dict[str, Any]:
+    """ Reads a tabular geospatial file and returns its content as a table."""
+    try:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File not found: {file_path}")
+        
+        gdf = gpd.read_file(file_path)
+        preview = gdf.head(5).to_dict(orient="records")
+        
+        return {
+            "status": "success",
+            "columns": list(gdf.columns),
+            "preview": preview,
+            "message": f"File loaded successfully with {len(gdf)} rows"
+        }
+
+    except Exception as e:
+        logger.error(f"Error reading file: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Failed to read file: {str(e)}"
+        }
 
 def main():
     """Main entry point for the GIS MCP server."""
