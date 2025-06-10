@@ -1224,6 +1224,61 @@ def raster_band_statistics(
     except Exception as e:
         raise ValueError(f"Failed to compute statistics: {e}")
 
+@mcp.tool()
+def tile_raster(
+    source: str,
+    tile_size: int,
+    destination_dir: str
+) -> Dict[str, Any]:
+    """
+    Split a raster into square tiles of a given size and save them individually.
+
+    Parameters:
+    - source:         input raster path.
+    - tile_size:      size of each tile (e.g., 256 or 512).
+    - destination_dir: directory to store the tiles.
+    """
+    try:
+        import os
+        import rasterio
+        from rasterio.windows import Window
+
+        src_path = os.path.expanduser(source.replace("`", ""))
+        dst_dir = os.path.expanduser(destination_dir.replace("`", ""))
+        os.makedirs(dst_dir, exist_ok=True)
+
+        tile_count = 0
+
+        with rasterio.open(src_path) as src:
+            profile = src.profile.copy()
+            for i in range(0, src.height, tile_size):
+                for j in range(0, src.width, tile_size):
+                    window = Window(j, i, tile_size, tile_size)
+                    transform = src.window_transform(window)
+                    data = src.read(window=window)
+
+                    out_profile = profile.copy()
+                    out_profile.update({
+                        "height": data.shape[1],
+                        "width": data.shape[2],
+                        "transform": transform
+                    })
+
+                    tile_path = os.path.join(dst_dir, f"tile_{i}_{j}.tif")
+                    with rasterio.open(tile_path, "w", **out_profile) as dst:
+                        dst.write(data)
+
+                    tile_count += 1
+
+        return {
+            "status": "success",
+            "tiles_created": tile_count,
+            "message": f"{tile_count} tiles created and saved in '{dst_dir}'."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to tile raster: {e}")
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
