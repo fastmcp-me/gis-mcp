@@ -1317,6 +1317,52 @@ def raster_histogram(
     except Exception as e:
         raise ValueError(f"Failed to compute histogram: {e}")
 
+@mcp.tool()
+def compute_ndvi(
+    source: str,
+    red_band_index: int,
+    nir_band_index: int,
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Compute NDVI (Normalized Difference Vegetation Index) and save to GeoTIFF.
+
+    Parameters:
+    - source:            input raster path.
+    - red_band_index:    index of red band (1-based).
+    - nir_band_index:    index of near-infrared band (1-based).
+    - destination:       output NDVI raster path.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        import os
+
+        src_path = os.path.expanduser(source.replace("`", ""))
+        dst_path = os.path.expanduser(destination.replace("`", ""))
+
+        with rasterio.open(src_path) as src:
+            red = src.read(red_band_index).astype("float32")
+            nir = src.read(nir_band_index).astype("float32")
+            ndvi = (nir - red) / (nir + red + 1e-6)  # avoid division by zero
+
+            profile = src.profile.copy()
+            profile.update(dtype="float32", count=1)
+
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        with rasterio.open(dst_path, "w", **profile) as dst:
+            dst.write(ndvi, 1)
+
+        return {
+            "status": "success",
+            "destination": dst_path,
+            "message": f"NDVI calculated and saved to '{dst_path}'."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to compute NDVI: {e}")
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
