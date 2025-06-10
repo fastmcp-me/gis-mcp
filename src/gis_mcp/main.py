@@ -132,7 +132,7 @@ def get_geodetic_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("geopandas/io")
+@mcp.resource(uri="http://localhost/geopandas/io")
 def get_geopandas_io() -> Dict[str, List[str]]:
     """List available GeoPandas I/O operations."""
     return {
@@ -778,19 +778,24 @@ import os
 
 @mcp.tool()
 def read_file_gpd(file_path: str) -> Dict[str, Any]:
-    """ Reads a tabular geospatial file and returns its content as a table."""
+    """Reads a geospatial file and returns stats and a data preview."""
     try:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
-        
+
         gdf = gpd.read_file(file_path)
         preview = gdf.head(5).to_dict(orient="records")
         
         return {
             "status": "success",
             "columns": list(gdf.columns),
+            "column_types": gdf.dtypes.astype(str).to_dict(),
+            "num_rows": len(gdf),
+            "num_columns": gdf.shape[1],
+            "crs": str(gdf.crs),
+            "bounds": gdf.total_bounds.tolist(),  # [minx, miny, maxx, maxy]
             "preview": preview,
-            "message": f"File loaded successfully with {len(gdf)} rows"
+            "message": f"File loaded successfully with {len(gdf)} rows and {gdf.shape[1]} columns"
         }
 
     except Exception as e:
@@ -799,6 +804,7 @@ def read_file_gpd(file_path: str) -> Dict[str, Any]:
             "status": "error",
             "message": f"Failed to read file: {str(e)}"
         }
+
 
 def main():
     """Main entry point for the GIS MCP server."""
