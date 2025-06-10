@@ -137,9 +137,17 @@ def get_geopandas_io() -> Dict[str, List[str]]:
     """List available GeoPandas I/O operations."""
     return {
         "operations": [
-            "read_file_gpd"
+            "read_file_gpd",
+            "write_file_gpd"
         ]
     }
+
+@mcp.resource("gis://geopandas/joins")
+def get_geopandas_joins() -> Dict[str, List[str]]:
+    """List available GeoPandas join operations."""
+    return {
+        "operations": [
+            "append_gpd"]}
 
 # Tool implementations
 @mcp.tool()
@@ -804,6 +812,58 @@ def read_file_gpd(file_path: str) -> Dict[str, Any]:
             "status": "error",
             "message": f"Failed to read file: {str(e)}"
         }
+
+@mcp.tool()
+def append_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> Dict[str, Any]:
+    """ Reads two shapefiles directly, concatenates them vertically."""
+    try:
+        import geopandas as gpd
+        import pandas as pd
+        from typing import Dict, Any
+        import logging
+
+        # Configure a basic logger for demonstration
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+
+        # Step 1: Read the two shapefiles into GeoDataFrames.
+        logger.info(f"Reading {shapefile1_path}...")
+        gdf1 = gpd.read_file(shapefile1_path)
+        
+        logger.info(f"Reading {shapefile2_path}...")
+        gdf2 = gpd.read_file(shapefile2_path)
+
+        # Step 2: Ensure the Coordinate Reference Systems (CRS) match.
+        if gdf1.crs != gdf2.crs:
+            logger.warning(
+                f"CRS mismatch: GDF1 has '{gdf1.crs}' and GDF2 has '{gdf2.crs}'. "
+                "Reprojecting GDF2."
+            )
+            gdf2 = gdf2.to_crs(gdf1.crs)
+
+        # Step 3: Concatenate the two GeoDataFrames.
+        combined_gdf = pd.concat([gdf1, gdf2], ignore_index=True)
+
+        # Step 4: Save the combined GeoDataFrame to a new shapefile.
+        logger.info(f"Saving combined shapefile to {output_path}...")
+        combined_gdf.to_file(output_path, driver='ESRI Shapefile')
+
+        return {
+            "status": "success",
+            "message": f"Shapefiles concatenated successfully into '{output_path}'.",
+            "info": {
+                "output_path": output_path,
+                "num_features": len(combined_gdf),
+                "crs": str(combined_gdf.crs),
+                "columns": list(combined_gdf.columns)
+            }
+        }
+    
+    except Exception as e:
+        logger.error(f"Error processing shapefiles: {str(e)}")
+        raise ValueError(f"Failed to process shapefiles: {str(e)}")
+
+
 
 
 def main():
