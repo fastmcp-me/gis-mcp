@@ -1065,6 +1065,85 @@ def resample_raster(
         logger.error(f"Error resampling raster '{source}': {e}")
         raise ValueError(f"Failed to resample raster: {e}")
 
+@mcp.tool()
+def reproject_raster(
+    source: str,
+    target_crs: str,
+    destination: str,
+    resampling: str = "nearest"
+) -> Dict[str, Any]:
+    """
+    Reproject a raster dataset to a new CRS and save the result.
+    
+    Parameters:
+    - source:      local path or HTTPS URL of the source raster.
+    - target_crs:  target CRS string (e.g., "EPSG:4326").
+    - destination: local filesystem path for the reprojected raster.
+    - resampling:  resampling method: "nearest", "bilinear", "cubic", etc.
+    """
+    try:
+        import numpy as np
+        import rasterio
+        from rasterio.warp import calculate_default_transform, reproject, Resampling
+
+        # Strip backticks if present
+        src_clean = source.replace("`", "")
+        dst_clean = destination.replace("`", "")
+
+        # Open source (remote or local)
+        if src_clean.lower().startswith("https://"):
+            src = rasterio.open(src_clean)
+        else:
+            src_path = os.path.expanduser(src_clean)
+            if not os.path.isfile(src_path):
+                raise FileNotFoundError(f"Source raster not found at '{src_path}'.")
+            src = rasterio.open(src_path)
+
+        # Calculate transform and dimensions for the target CRS
+        transform, width, height = calculate_default_transform(
+            src.crs, target_crs, src.width, src.height, *src.bounds
+        )
+
+        # Update profile for output
+        profile = src.profile.copy()
+        profile.update({
+            "crs": target_crs,
+            "transform": transform,
+            "width": width,
+            "height": height
+        })
+        src.close()
+
+        # Map resampling method string to Resampling enum
+        resampling_enum = getattr(Resampling, resampling.lower(), Resampling.nearest)
+
+        # Ensure destination directory exists
+        dst_path = os.path.expanduser(dst_clean)
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        # Perform reprojection and write output
+        with rasterio.open(dst_path, "w", **profile) as dst:
+            for i in range(1, profile["count"] + 1):
+                reproject(
+                    source=rasterio.open(src_clean).read(i),
+                    destination=rasterio.band(dst, i),
+                    src_transform=profile["transform"],  # placeholder, will be overwritten
+                    src_crs=src.crs,
+                    dst_transform=transform,
+                    dst_crs=target_crs,
+                    resampling=resampling_enum
+                )
+
+        return {
+            "status":      "success",
+            "destination": dst_path,
+            "message":     f"Raster reprojected to '{target_crs}' and saved to '{dst_path}'."
+        }
+
+    except Exception as e:
+        logger.error(f"Error reprojecting raster '{source}' to '{target_crs}': {e}")
+        raise ValueError(f"Failed to reproject raster: {e}")
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
