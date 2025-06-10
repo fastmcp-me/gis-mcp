@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "gis-mcp": {
-      "command": "C:\\Users\\Lenovo\\Desktop\\gis-mcp\\.venv\\Scripts\\gis-mcp",
-      "args": []
-    }
-  }
-}
