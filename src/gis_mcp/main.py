@@ -1363,6 +1363,58 @@ def compute_ndvi(
     except Exception as e:
         raise ValueError(f"Failed to compute NDVI: {e}")
 
+@mcp.tool()
+def raster_to_vector(
+    source: str,
+    band_index: int,
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Convert an entire raster band to vector polygons without filtering by threshold.
+
+    Parameters:
+    - source:      Path to the input raster file (.tif).
+    - band_index:  Index of the band to convert (1-based index).
+    - destination: Path to save the output shapefile (excluding .shp extension).
+
+    The function reads the raster band, converts all pixel values into polygons,
+    and saves the result as a shapefile.
+    """
+    try:
+        import numpy as np
+        import rasterio
+        import geopandas as gpd
+        from rasterio.features import shapes
+        from shapely.geometry import shape
+
+        # Expand file paths
+        src_path = os.path.expanduser(source.replace("`", ""))
+        dst_path = os.path.expanduser(destination.replace("`", ""))
+
+        # Open the raster file
+        with rasterio.open(src_path) as src:
+            band = src.read(band_index, masked=True)  # Read the specified raster band
+            
+            # Convert raster data into polygons
+            results = (
+                {"geometry": shape(geom), "value": int(val)}
+                for geom, val in shapes(band, transform=src.transform)
+            )
+
+        # Create a GeoDataFrame and save as a shapefile
+        gdf = gpd.GeoDataFrame.from_records(results, crs=src.crs)
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+        gdf.to_file(dst_path + ".shp")
+
+        return {
+            "status": "success",
+            "destination": dst_path + ".shp",
+            "message": "Raster fully converted to vector polygons and saved."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to convert raster to vector: {e}")
+        
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
