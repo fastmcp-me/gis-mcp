@@ -132,13 +132,13 @@ def get_geodetic_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource(uri="http://localhost/geopandas/io")
+@mcp.resource("gis://geopandas/io")
 def get_geopandas_io() -> Dict[str, List[str]]:
     """List available GeoPandas I/O operations."""
     return {
         "operations": [
             "read_file_gpd",
-            "write_file_gpd"
+            "to_file_gpd"
         ]
     }
 
@@ -147,7 +147,8 @@ def get_geopandas_joins() -> Dict[str, List[str]]:
     """List available GeoPandas join operations."""
     return {
         "operations": [
-            "append_gpd"]}
+            "append_gpd",
+            "merge_gpd"]}
 
 # Tool implementations
 @mcp.tool()
@@ -813,6 +814,7 @@ def read_file_gpd(file_path: str) -> Dict[str, Any]:
             "message": f"Failed to read file: {str(e)}"
         }
 
+
 @mcp.tool()
 def append_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> Dict[str, Any]:
     """ Reads two shapefiles directly, concatenates them vertically."""
@@ -863,6 +865,65 @@ def append_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> 
         logger.error(f"Error processing shapefiles: {str(e)}")
         raise ValueError(f"Failed to process shapefiles: {str(e)}")
 
+@mcp.tool()
+def merge_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> Dict[str, Any]:
+    """ 
+    Merges two shapefiles based on common attribute columns,
+    This function performs a database-style join, not a spatial join.
+    Args:
+        left_shapefile_path: Path to the left shapefile. The geometry from this file is preserved.
+        right_shapefile_path: Path to the right shapefile to merge.
+        output_path: Path to save the merged output shapefile.
+        how: Type of merge. One of 'left', 'right', 'outer', 'inner'. Defaults to 'inner'.
+        on: Column name to join on. Must be found in both shapefiles.
+        left_on: Column name to join on in the left shapefile.
+        right_on: Column name to join on in the right shapefile.
+        suffixes: Suffix to apply to overlapping column names.
+    """
+    try :
+        # Step 1: Read the two shapefiles directly into GeoDataFrames.
+        logger.info(f"Reading left shapefile: {left_shapefile_path}...")
+        left_gdf = gpd.read_file(left_shapefile_path)
+        
+        logger.info(f"Reading right shapefile: {right_shapefile_path}...")
+        # For an attribute join, we only need the attribute data from the right file.
+        # We can drop its geometry column to make the merge cleaner and more memory-efficient.
+        right_df = pd.DataFrame(gpd.read_file(right_shapefile_path).drop(columns='geometry'))
+
+         # Step 2: Perform the merge operation using the optimized geopandas.merge.
+        # This function correctly handles the geometry of the left GeoDataFrame.
+        logger.info(f"Performing '{how}' merge...")
+        merged_gdf = gpd.merge(
+            left_gdf,
+            right_df,
+            how=how,
+            on=on,
+            left_on=left_on,
+            right_on=right_on,
+            suffixes=suffixes
+        )
+
+        if merged_gdf.empty:
+            logger.warning("The merge result is empty. No matching records were found.")
+
+        # Step 3: Save the merged GeoDataFrame to a new shapefile.
+        logger.info(f"Saving merged shapefile to {output_path}...")
+        merged_gdf.to_file(output_path, driver='ESRI Shapefile')
+
+        return {
+            "status": "success",
+            "message": f"Shapefiles merged successfully into '{output_path}'.",
+            "info": {
+                "output_path": output_path,
+                "merge_type": how,
+                "num_features": len(merged_gdf),
+                "crs": str(merged_gdf.crs),
+                "columns": list(merged_gdf.columns)
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error merging shapefiles: {str(e)}")
+        raise ValueError(f"Failed to merge shapefiles: {str(e)}")
 
 
 
