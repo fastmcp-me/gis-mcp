@@ -141,7 +141,16 @@ def get_rasterio_operations() -> Dict[str, List[str]]:
             "metadata_raster",
             "get_raster_crs",
             "clip_raster_with_shapefile",
-            "resample_raster"
+            "resample_raster",
+            "reproject_raster",
+            "weighted_band_sum",
+            "concat_bands",
+            "raster_algebra",
+            "compute_ndvi",
+            "raster_histogram",
+            "tile_raster",
+            "raster_band_statistics",
+            "extract_band",
         ]
     }
 
@@ -1336,7 +1345,6 @@ def compute_ndvi(
     try:
         import rasterio
         import numpy as np
-        import os
 
         src_path = os.path.expanduser(source.replace("`", ""))
         dst_path = os.path.expanduser(destination.replace("`", ""))
@@ -1364,68 +1372,6 @@ def compute_ndvi(
         raise ValueError(f"Failed to compute NDVI: {e}")
 
 @mcp.tool()
-def raster_to_vector(
-    source: str,
-    band_index: int,
-    destination: str
-) -> Dict[str, Any]:
-    """
-    Convert an entire raster band to vector polygons without filtering by threshold.
-
-    Parameters:
-    - source:      Path to the input raster file (.tif).
-    - band_index:  Index of the band to convert (1-based index).
-    - destination: Path to save the output shapefile (excluding .shp extension).
-
-    The function reads the raster band, ensures the correct data type, converts it
-    into polygons, and saves the result as a shapefile.
-    """
-    try:
-        import numpy as np
-        import rasterio
-        import geopandas as gpd
-        from rasterio.features import shapes
-        from shapely.geometry import shape
-
-        # Expand file paths
-        src_path = os.path.expanduser(source.replace("`", ""))
-        dst_path = os.path.expanduser(destination.replace("`", ""))
-
-        # Open the raster file
-        with rasterio.open(src_path) as src:
-            band = src.read(band_index, masked=True)
-
-            # Ensure the data type is compatible with rasterio.features.shapes()
-            valid_dtypes = ["int16", "int32", "uint8", "uint16", "float32"]
-            if band.dtype.name not in valid_dtypes:
-                band = band.astype("float32")  # Convert to float32 if necessary
-
-            # Convert raster data into polygons
-            results = (
-                {"geometry": shape(geom), "value": int(val)}
-                for geom, val in shapes(band, transform=src.transform)
-            )
-
-        # Create a GeoDataFrame and set CRS correctly
-        gdf = gpd.GeoDataFrame.from_records(results)
-        gdf.set_crs(src.crs, inplace=True)
-
-        # Ensure output directory exists
-        os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
-
-        # Save as a shapefile
-        gdf.to_file(dst_path + ".shp")
-
-        return {
-            "status": "success",
-            "destination": dst_path + ".shp",
-            "message": "Raster fully converted to vector polygons and saved."
-        }
-
-    except Exception as e:
-        raise ValueError(f"Failed to convert raster to vector: {e}")
-
-@mcp.tool()
 def raster_algebra(
     raster1: str,
     raster2: str,
@@ -1434,7 +1380,8 @@ def raster_algebra(
     destination: str
 ) -> Dict[str, Any]:
     """
-    Perform algebraic operations (addition or subtraction) on two raster bands and save the result.
+    Perform algebraic operations (addition or subtraction) on two raster bands, 
+    handling alignment issues automatically.
 
     Parameters:
     - raster1:     Path to the first raster (.tif).
@@ -1443,12 +1390,12 @@ def raster_algebra(
     - operation:   Either "add" or "subtract" to specify the calculation.
     - destination: Path to save the result as a new raster.
 
-    The function reads the bands from both rasters, applies the selected operation,
-    and saves the resulting raster.
+    The function aligns rasters if needed, applies the selected operation, and saves the result.
     """
     try:
         import rasterio
         import numpy as np
+        from rasterio.warp import reproject, calculate_default_transform, Resampling
 
         # Expand file paths
         r1 = os.path.expanduser(raster1.replace("`", ""))
@@ -1457,8 +1404,26 @@ def raster_algebra(
 
         # Open the raster files
         with rasterio.open(r1) as src1, rasterio.open(r2) as src2:
+            # Ensure alignment of rasters
+            if src1.crs != src2.crs or src1.transform != src2.transform or src1.shape != src2.shape:
+                transform, width, height = calculate_default_transform(
+                    src2.crs, src1.crs, src2.width, src2.height, *src2.bounds
+                )
+                aligned_data = np.zeros((height, width), dtype="float32")
+                reproject(
+                    source=src2.read(band_index),
+                    destination=aligned_data,
+                    src_transform=src2.transform,
+                    src_crs=src2.crs,
+                    dst_transform=transform,
+                    dst_crs=src1.crs,
+                    resampling=Resampling.bilinear
+                )
+                band2 = aligned_data
+            else:
+                band2 = src2.read(band_index).astype("float32")
+
             band1 = src1.read(band_index).astype("float32")
-            band2 = src2.read(band_index).astype("float32")
 
             # Perform the selected operation
             if operation.lower() == "add":
@@ -1494,38 +1459,39 @@ def concat_bands(
     destination: str
 ) -> Dict[str, Any]:
     """
-    Concatenate multiple single-band raster files into one multi-band raster.
+    Concatenate multiple single-band raster files into one multi-band raster, 
+    handling alignment issues automatically.
 
     Parameters:
     - folder_path:   Path to folder containing input raster files (e.g. GeoTIFFs).
     - destination:   Path to output multi-band raster file.
 
     Notes:
-    - Assumes all rasters have the same dimensions, CRS, and transform.
     - Files are read in sorted order by filename.
+    - If rasters have mismatched CRS, resolution, or dimensions, they are aligned automatically.
     """
     try:
-        import os
         import rasterio
         import numpy as np
+        from rasterio.warp import reproject, calculate_default_transform, Resampling
         from glob import glob
 
         folder_path = os.path.expanduser(folder_path.replace("`", ""))
         dst_path = os.path.expanduser(destination.replace("`", ""))
 
-        # جمع‌آوری فایل‌های تکی tif در مسیر پوشه
+        # Collect single-band TIFF files in folder
         files = sorted(glob(os.path.join(folder_path, "*.tif")))
 
         if len(files) == 0:
             raise ValueError("No .tif files found in folder.")
 
-        # خواندن ویژگی‌های فایل اول برای تنظیم profile
+        # Read properties of the first file for reference
         with rasterio.open(files[0]) as ref:
             meta = ref.meta.copy()
             height, width = ref.height, ref.width
-            dtype = ref.dtypes[0]
             crs = ref.crs
             transform = ref.transform
+            dtype = ref.dtypes[0]
 
         meta.update(count=len(files), dtype=dtype)
 
@@ -1535,9 +1501,24 @@ def concat_bands(
             for idx, fp in enumerate(files, start=1):
                 with rasterio.open(fp) as src:
                     band = src.read(1)
-                    # بررسی ابعاد سازگار
-                    if src.height != height or src.width != width:
-                        raise ValueError(f"Raster size mismatch in {fp}.")
+
+                    # Auto-align raster if size or CRS mismatch occurs
+                    if src.height != height or src.width != width or src.crs != crs or src.transform != transform:
+                        new_transform, new_width, new_height = calculate_default_transform(
+                            src.crs, crs, src.width, src.height, *src.bounds
+                        )
+                        aligned_band = np.zeros((new_height, new_width), dtype=dtype)
+                        reproject(
+                            source=band,
+                            destination=aligned_band,
+                            src_transform=src.transform,
+                            src_crs=src.crs,
+                            dst_transform=new_transform,
+                            dst_crs=crs,
+                            resampling=Resampling.bilinear
+                        )
+                        band = aligned_band
+
                     dst.write(band, idx)
 
         return {
