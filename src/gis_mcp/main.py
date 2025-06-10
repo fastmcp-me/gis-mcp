@@ -1279,6 +1279,44 @@ def tile_raster(
     except Exception as e:
         raise ValueError(f"Failed to tile raster: {e}")
 
+@mcp.tool()
+def raster_histogram(
+    source: str,
+    bins: int = 256
+) -> Dict[str, Any]:
+    """
+    Compute histogram of pixel values for each band.
+
+    Parameters:
+    - source: path to input raster.
+    - bins:   number of histogram bins.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        import os
+
+        src_path = os.path.expanduser(source.replace("`", ""))
+        histograms = {}
+
+        with rasterio.open(src_path) as src:
+            for i in range(1, src.count + 1):
+                band = src.read(i, masked=True)
+                hist, bin_edges = np.histogram(band.compressed(), bins=bins)
+                histograms[f"Band {i}"] = {
+                    "histogram": hist.tolist(),
+                    "bin_edges": bin_edges.tolist()
+                }
+
+        return {
+            "status": "success",
+            "histograms": histograms,
+            "message": f"Histogram computed for all bands."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to compute histogram: {e}")
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
