@@ -1377,8 +1377,8 @@ def raster_to_vector(
     - band_index:  Index of the band to convert (1-based index).
     - destination: Path to save the output shapefile (excluding .shp extension).
 
-    The function reads the raster band, converts all pixel values into polygons,
-    and saves the result as a shapefile.
+    The function reads the raster band, ensures the correct data type, converts it
+    into polygons, and saves the result as a shapefile.
     """
     try:
         import numpy as np
@@ -1393,20 +1393,25 @@ def raster_to_vector(
 
         # Open the raster file
         with rasterio.open(src_path) as src:
-            band = src.read(band_index, masked=True)  # Read the specified raster band
-            
+            band = src.read(band_index, masked=True)
+
+            # Ensure the data type is compatible with rasterio.features.shapes()
+            valid_dtypes = ["int16", "int32", "uint8", "uint16", "float32"]
+            if band.dtype.name not in valid_dtypes:
+                band = band.astype("float32")  # Convert to float32 if necessary
+
             # Convert raster data into polygons
             results = (
                 {"geometry": shape(geom), "value": int(val)}
                 for geom, val in shapes(band, transform=src.transform)
             )
 
-        # Create a GeoDataFrame
+        # Create a GeoDataFrame and set CRS correctly
         gdf = gpd.GeoDataFrame.from_records(results)
-        gdf.set_crs(src.crs, inplace=True)  # assign CRS
+        gdf.set_crs(src.crs, inplace=True)
 
         # Ensure output directory exists
-        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+        os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
 
         # Save as a shapefile
         gdf.to_file(dst_path + ".shp")
@@ -1482,6 +1487,120 @@ def raster_algebra(
 
     except Exception as e:
         raise ValueError(f"Failed to perform raster operation: {e}")
+
+@mcp.tool()
+def concat_bands(
+    folder_path: str,
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Concatenate multiple single-band raster files into one multi-band raster.
+
+    Parameters:
+    - folder_path:   Path to folder containing input raster files (e.g. GeoTIFFs).
+    - destination:   Path to output multi-band raster file.
+
+    Notes:
+    - Assumes all rasters have the same dimensions, CRS, and transform.
+    - Files are read in sorted order by filename.
+    """
+    try:
+        import os
+        import rasterio
+        import numpy as np
+        from glob import glob
+
+        folder_path = os.path.expanduser(folder_path.replace("`", ""))
+        dst_path = os.path.expanduser(destination.replace("`", ""))
+
+        # جمع‌آوری فایل‌های تکی tif در مسیر پوشه
+        files = sorted(glob(os.path.join(folder_path, "*.tif")))
+
+        if len(files) == 0:
+            raise ValueError("No .tif files found in folder.")
+
+        # خواندن ویژگی‌های فایل اول برای تنظیم profile
+        with rasterio.open(files[0]) as ref:
+            meta = ref.meta.copy()
+            height, width = ref.height, ref.width
+            dtype = ref.dtypes[0]
+            crs = ref.crs
+            transform = ref.transform
+
+        meta.update(count=len(files), dtype=dtype)
+
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        with rasterio.open(dst_path, "w", **meta) as dst:
+            for idx, fp in enumerate(files, start=1):
+                with rasterio.open(fp) as src:
+                    band = src.read(1)
+                    # بررسی ابعاد سازگار
+                    if src.height != height or src.width != width:
+                        raise ValueError(f"Raster size mismatch in {fp}.")
+                    dst.write(band, idx)
+
+        return {
+            "status": "success",
+            "destination": dst_path,
+            "message": f"{len(files)} single-band rasters concatenated into '{dst_path}'."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to concatenate rasters: {e}")
+
+@mcp.tool()
+def weighted_band_sum(
+    source: str,
+    weights: List[float],
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Compute a weighted sum of all bands in a raster using specified weights.
+
+    Parameters:
+    - source:      Path to the input multi-band raster file.
+    - weights:     List of weights (must match number of bands and sum to 1).
+    - destination: Path to save the output single-band raster.
+    """
+    try:
+        import os
+        import numpy as np
+        import rasterio
+
+        src_path = os.path.expanduser(source.replace("`", ""))
+        dst_path = os.path.expanduser(destination.replace("`", ""))
+
+        with rasterio.open(src_path) as src:
+            count = src.count
+            if len(weights) != count:
+                raise ValueError(f"Number of weights ({len(weights)}) does not match number of bands ({count}).")
+
+            if not np.isclose(sum(weights), 1.0, atol=1e-6):
+                raise ValueError("Sum of weights must be 1.0.")
+
+            weighted = np.zeros((src.height, src.width), dtype="float32")
+
+            for i in range(1, count + 1):
+                band = src.read(i).astype("float32")
+                weighted += weights[i - 1] * band
+
+            profile = src.profile.copy()
+            profile.update(dtype="float32", count=1)
+
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        with rasterio.open(dst_path, "w", **profile) as dst:
+            dst.write(weighted, 1)
+
+        return {
+            "status": "success",
+            "destination": dst_path,
+            "message": f"Weighted band sum computed and saved to '{dst_path}'."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to compute weighted sum: {e}")
 
 def main():
     """Main entry point for the GIS MCP server."""
