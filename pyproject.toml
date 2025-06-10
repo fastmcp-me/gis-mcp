@@ -14,7 +14,7 @@ authors = [
     {name = "Mahdi Nazari Ashani"},
     {name = "GIS MCP Contributors"},
 ]
-keywords = ["mcp", "gis", "llm", "geospatial", "ogc", "pyproj", "shapely"]
+keywords = ["mcp", "gis", "llm", "geospatial", "ogc", "pyproj", "shapely", "rasterio"]
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -27,8 +27,10 @@ classifiers = [
 
 dependencies = [
     "mcp==1.6.0",
+    "numpy>=1.23,<2.0",
     "shapely>=2.1.0",
     "pyproj>=3.7.1",
+    "rasterio==1.3.9",
 ]
 
 
