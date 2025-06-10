@@ -1401,9 +1401,14 @@ def raster_to_vector(
                 for geom, val in shapes(band, transform=src.transform)
             )
 
-        # Create a GeoDataFrame and save as a shapefile
-        gdf = gpd.GeoDataFrame.from_records(results, crs=src.crs)
+        # Create a GeoDataFrame
+        gdf = gpd.GeoDataFrame.from_records(results)
+        gdf.set_crs(src.crs, inplace=True)  # assign CRS
+
+        # Ensure output directory exists
         os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        # Save as a shapefile
         gdf.to_file(dst_path + ".shp")
 
         return {
@@ -1414,7 +1419,70 @@ def raster_to_vector(
 
     except Exception as e:
         raise ValueError(f"Failed to convert raster to vector: {e}")
-        
+
+@mcp.tool()
+def raster_algebra(
+    raster1: str,
+    raster2: str,
+    band_index: int,
+    operation: str,  # User selects "add" or "subtract"
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Perform algebraic operations (addition or subtraction) on two raster bands and save the result.
+
+    Parameters:
+    - raster1:     Path to the first raster (.tif).
+    - raster2:     Path to the second raster (.tif).
+    - band_index:  Index of the band to process (1-based index).
+    - operation:   Either "add" or "subtract" to specify the calculation.
+    - destination: Path to save the result as a new raster.
+
+    The function reads the bands from both rasters, applies the selected operation,
+    and saves the resulting raster.
+    """
+    try:
+        import rasterio
+        import numpy as np
+
+        # Expand file paths
+        r1 = os.path.expanduser(raster1.replace("`", ""))
+        r2 = os.path.expanduser(raster2.replace("`", ""))
+        dst = os.path.expanduser(destination.replace("`", ""))
+
+        # Open the raster files
+        with rasterio.open(r1) as src1, rasterio.open(r2) as src2:
+            band1 = src1.read(band_index).astype("float32")
+            band2 = src2.read(band_index).astype("float32")
+
+            # Perform the selected operation
+            if operation.lower() == "add":
+                result = band1 + band2
+            elif operation.lower() == "subtract":
+                result = band1 - band2
+            else:
+                raise ValueError("Invalid operation. Use 'add' or 'subtract'.")
+
+            # Prepare output raster metadata
+            profile = src1.profile.copy()
+            profile.update(dtype="float32", count=1)
+
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
+
+        # Save the result to a new raster file
+        with rasterio.open(dst, "w", **profile) as dstfile:
+            dstfile.write(result, 1)
+
+        return {
+            "status": "success",
+            "destination": dst,
+            "message": f"Raster operation '{operation}' completed and saved."
+        }
+
+    except Exception as e:
+        raise ValueError(f"Failed to perform raster operation: {e}")
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
