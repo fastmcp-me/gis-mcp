@@ -133,13 +133,14 @@ def get_geodetic_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://raster/rasterio")
+@mcp.resource("gis://operation/rasterio")
 def get_rasterio_operations() -> Dict[str, List[str]]:
     """List available rasterio operations."""
     return {
         "operations": [
             "metadata_raster",
-            ""
+            "get_raster_crs",
+            "clip_raster_with_shapefile",
         ]
     }
 
@@ -286,7 +287,7 @@ def minimum_rotated_rectangle(geometry: str) -> Dict[str, Any]:
 
 @mcp.tool()
 def rotate_geometry(geometry: str, angle: float, origin: str = "center", 
-                   use_radians: bool = False) -> Dict[str, Any]:
+                use_radians: bool = False) -> Dict[str, Any]:
     """Rotate a geometry."""
     try:
         from shapely import wkt
@@ -304,7 +305,7 @@ def rotate_geometry(geometry: str, angle: float, origin: str = "center",
 
 @mcp.tool()
 def scale_geometry(geometry: str, xfact: float, yfact: float, 
-                  origin: str = "center") -> Dict[str, Any]:
+                origin: str = "center") -> Dict[str, Any]:
     """Scale a geometry."""
     try:
         from shapely import wkt
@@ -322,7 +323,7 @@ def scale_geometry(geometry: str, xfact: float, yfact: float,
 
 @mcp.tool()
 def translate_geometry(geometry: str, xoff: float, yoff: float, 
-                      zoff: float = 0.0) -> Dict[str, Any]:
+                    zoff: float = 0.0) -> Dict[str, Any]:
     """Translate a geometry."""
     try:
         from shapely import wkt
@@ -530,7 +531,7 @@ def simplify(geometry: str, tolerance: float,
 
 @mcp.tool()
 def transform_coordinates(coordinates: List[float], source_crs: str, 
-                         target_crs: str) -> Dict[str, Any]:
+                        target_crs: str) -> Dict[str, Any]:
     """Transform coordinates between CRS."""
     try:
         from pyproj import Transformer
@@ -621,7 +622,7 @@ def get_available_crs() -> Dict[str, Any]:
 
 @mcp.tool()
 def get_geod_info(ellps: str = "WGS84", a: Optional[float] = None,
-                 b: Optional[float] = None, f: Optional[float] = None) -> Dict[str, Any]:
+                b: Optional[float] = None, f: Optional[float] = None) -> Dict[str, Any]:
     """Get information about a geodetic calculation."""
     try:
         import pyproj
@@ -642,7 +643,7 @@ def get_geod_info(ellps: str = "WGS84", a: Optional[float] = None,
 
 @mcp.tool()
 def calculate_geodetic_distance(point1: List[float], point2: List[float], 
-                              ellps: str = "WGS84") -> Dict[str, Any]:
+                            ellps: str = "WGS84") -> Dict[str, Any]:
     """Calculate geodetic distance between points."""
     try:
         import pyproj
@@ -664,7 +665,7 @@ def calculate_geodetic_distance(point1: List[float], point2: List[float],
 
 @mcp.tool()
 def calculate_geodetic_point(start_point: List[float], azimuth: float, 
-                           distance: float, ellps: str = "WGS84") -> Dict[str, Any]:
+                        distance: float, ellps: str = "WGS84") -> Dict[str, Any]:
     """Calculate point at given distance and azimuth."""
     try:
         import pyproj
@@ -821,7 +822,7 @@ def metadata_raster(path_or_url: str) -> Dict[str, Any]:
             "count": dataset.count,                                     # Number of bands
             "bounds": dataset.bounds,                                   # Show bounding box
             "band_dtypes": band_dtypes,                                 # { band_index: dtype_string }
-            "no_data": dataset.nodatavals                               # Number of NoData values in each band
+            "no_data": dataset.nodatavals,                              # Number of NoData values in each band
             "crs": dataset.crs.to_string() if dataset.crs else None,    # CRS as EPSG string or None
             "transform": list(dataset.transform),                       # Affine transform coefficients (6 floats)
         }
@@ -837,6 +838,54 @@ def metadata_raster(path_or_url: str) -> Dict[str, Any]:
         # Log the error for debugging purposes, then raise ValueError so MCP can relay it
         logger.error(f"Error opening raster '{path_or_url}': {str(e)}")
         raise ValueError(f"Failed to open raster '{path_or_url}': {str(e)}")
+
+@mcp.tool()
+def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
+    """
+    Retrieve the Coordinate Reference System (CRS) of a raster dataset.
+    
+    Opens the raster (local path or HTTPS URL), reads its DatasetReader.crs
+    attribute as a PROJ.4-style dict, and also returns the WKT representation.
+    """
+    try:
+        # Ensure NumPy’s C-API is initialized before rasterio
+        import numpy as np
+        import rasterio
+
+        # Strip backticks if the client wrapped the input in them
+        cleaned = path_or_url.replace("`", "")
+
+        # Open remote or local dataset
+        if cleaned.lower().startswith("https://"):
+            src = rasterio.open(cleaned)
+        else:
+            local_path = os.path.expanduser(cleaned)
+            if not os.path.isfile(local_path):
+                raise FileNotFoundError(f"Raster file not found at '{local_path}'.")
+            src = rasterio.open(local_path)
+
+        # Access the CRS object on the opened dataset
+        crs_obj = src.crs
+        src.close()
+
+        if crs_obj is None:
+            raise ValueError("No CRS defined for this dataset.")
+
+        # Convert CRS to PROJ.4‐style dict and WKT string
+        proj4_dict = crs_obj.to_dict()    # e.g., {'init': 'epsg:32618', ...}
+        wkt_str    = crs_obj.to_wkt()     # full WKT representation
+
+        return {
+            "status":      "success",
+            "proj4":       proj4_dict,
+            "wkt":         wkt_str,
+            "message":     "CRS retrieved successfully"
+        }
+
+    except Exception as e:
+        # Log and re-raise as ValueError for MCP error propagation
+        logger.error(f"Error retrieving CRS for '{path_or_url}': {e}")
+        raise ValueError(f"Failed to retrieve CRS: {e}")
 
 def main():
     """Main entry point for the GIS MCP server."""
