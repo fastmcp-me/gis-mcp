@@ -141,6 +141,7 @@ def get_rasterio_operations() -> Dict[str, List[str]]:
             "metadata_raster",
             "get_raster_crs",
             "clip_raster_with_shapefile",
+            "resample_raster"
         ]
     }
 
@@ -848,7 +849,6 @@ def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
     attribute as a PROJ.4-style dict, and also returns the WKT representation.
     """
     try:
-        # Ensure NumPy’s C-API is initialized before rasterio
         import numpy as np
         import rasterio
 
@@ -872,7 +872,7 @@ def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
             raise ValueError("No CRS defined for this dataset.")
 
         # Convert CRS to PROJ.4‐style dict and WKT string
-        proj4_dict = crs_obj.to_dict()    # e.g., {'init': 'epsg:32618', ...}
+        proj4_dict = crs_obj.to_dict()    # e.g., {'init': 'epsg:32618'}
         wkt_str    = crs_obj.to_wkt()     # full WKT representation
 
         return {
@@ -886,6 +886,90 @@ def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
         # Log and re-raise as ValueError for MCP error propagation
         logger.error(f"Error retrieving CRS for '{path_or_url}': {e}")
         raise ValueError(f"Failed to retrieve CRS: {e}")
+
+@mcp.tool()
+def clip_raster_with_shapefile(
+    raster_path_or_url: str,
+    shapefile_path: str,
+    destination: str
+) -> Dict[str, Any]:
+    """
+    Clip a raster dataset using polygons from a shapefile and write the result.
+    Converts the shapefile's CRS to match the raster's CRS if they are different.
+    
+    Parameters:
+    - raster_path_or_url: local path or HTTPS URL of the source raster.
+    - shapefile_path:     local filesystem path to a .shp file containing polygons.
+    - destination:        local path where the masked raster will be written.
+    """
+    try:
+        import numpy as np
+        import rasterio
+        import rasterio.mask
+        from rasterio.warp import transform_geom
+        import pyproj
+        import fiona
+
+        # Clean paths
+        raster_clean = raster_path_or_url.replace("`", "")
+        shp_clean = shapefile_path.replace("`", "")
+        dst_clean = destination.replace("`", "")
+
+        # Verify shapefile exists
+        shp_path = os.path.expanduser(shp_clean)
+        if not os.path.isfile(shp_path):
+            raise FileNotFoundError(f"Shapefile not found at '{shp_path}'.")
+
+        # Open the raster
+        if raster_clean.lower().startswith("https://"):
+            src = rasterio.open(raster_clean)
+        else:
+            src_path = os.path.expanduser(raster_clean)
+            if not os.path.isfile(src_path):
+                raise FileNotFoundError(f"Raster not found at '{src_path}'.")
+            src = rasterio.open(src_path)
+
+        raster_crs = src.crs  # Get raster CRS
+
+        # Read geometries from shapefile and check CRS
+        with fiona.open(shp_path, "r") as shp:
+            shapefile_crs = pyproj.CRS(shp.crs)  # Get shapefile CRS
+            shapes: List[Dict[str, Any]] = [feat["geometry"] for feat in shp]
+
+            # Convert geometries to raster CRS if necessary
+            if shapefile_crs != raster_crs:
+                shapes = [transform_geom(str(shapefile_crs), str(raster_crs), shape) for shape in shapes]
+
+        # Apply mask: crop to shapes and set outside pixels to zero
+        out_image, out_transform = rasterio.mask.mask(src, shapes, crop=True)
+        out_meta = src.meta.copy()
+        src.close()
+
+        # Update metadata for the masked output
+        out_meta.update({
+            "driver": "GTiff",
+            "height": out_image.shape[1],
+            "width": out_image.shape[2],
+            "transform": out_transform
+        })
+
+        # Ensure destination directory exists
+        dst_path = os.path.expanduser(dst_clean)
+        os.makedirs(os.path.dirname(dst_path) or ".", exist_ok=True)
+
+        # Write the masked raster
+        with rasterio.open(dst_path, "w", **out_meta) as dst:
+            dst.write(out_image)
+
+        return {
+            "status": "success",
+            "destination": dst_path,
+            "message": f"Raster masked and saved to '{dst_path}'."
+        }
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise ValueError(f"Failed to mask raster: {e}")
 
 def main():
     """Main entry point for the GIS MCP server."""
