@@ -7,16 +7,11 @@
   <img src="docs/gis-mcp.png" alt="GIS MCP Server Logo" width="300"/>
 </div>
 
-A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries (Currently Shapely and PyProj supported), enabling AI assistants to perform geospatial operations and transformations.
-
-
-<a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
-</a>
+A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries, enabling AI assistants to perform geospatial operations and transformations.
 
 > Alpha
 >
-> Version 0.2.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
+> Version 0.3.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -43,6 +38,13 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
     - [Coordinate Transformations](#coordinate-transformations)
     - [CRS Information](#crs-information)
     - [Geodetic Calculations](#geodetic-calculations)
+  - [Geopandas Operations](#geopandas-operations)
+    - [I/O Operations](#i/o-operations)
+    - [Join Operations](#join-operations)
+  - [Rasterio Operations](#rasterio-operations)
+    - [Basic Raster Operations](#basic-raster-operations)
+    - [Raster Processing](#raster-processing)
+    - [Raster Analysis](#raster-analysis)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -352,6 +354,52 @@ After configuration:
 | `calculate_geodetic_point`    | Calculate point at given distance and azimuth           |
 | `calculate_geodetic_area`     | Calculate area of a polygon using geodetic calculations |
 
+### GeoPandas Operations
+
+#### I/O Operations
+
+| Tool            | Description                                              |
+| --------------- | -------------------------------------------------------- |
+| `read_file_gpd` | Read a geospatial file and return stats and data preview |
+| `to_file_gpd`   | Write a GeoDataFrame to a file                           |
+
+#### Join Operations
+
+| Tool         | Description                                        |
+| ------------ | -------------------------------------------------- |
+| `append_gpd` | Concatenate two GeoDataFrames vertically           |
+| `merge_gpd`  | Perform database-style joins between GeoDataFrames |
+
+### Rasterio Operations
+
+#### Basic Raster Operations
+
+| Tool                     | Description                                              |
+| ------------------------ | -------------------------------------------------------- |
+| `metadata_raster`        | Get metadata from a raster dataset                       |
+| `get_raster_crs`         | Retrieve the CRS of a raster dataset                     |
+| `extract_band`           | Extract a specific band from a multi-band raster         |
+| `raster_band_statistics` | Calculate statistics (min, max, mean, std) for each band |
+| `raster_histogram`       | Compute histogram of pixel values for each band          |
+
+#### Raster Processing
+
+| Tool                         | Description                                   |
+| ---------------------------- | --------------------------------------------- |
+| `clip_raster_with_shapefile` | Clip a raster using polygons from a shapefile |
+| `resample_raster`            | Resample a raster by a scale factor           |
+| `reproject_raster`           | Reproject a raster to a new CRS               |
+| `tile_raster`                | Split a raster into square tiles              |
+
+#### Raster Analysis
+
+| Tool                | Description                                                     |
+| ------------------- | --------------------------------------------------------------- |
+| `compute_ndvi`      | Calculate Normalized Difference Vegetation Index                |
+| `raster_algebra`    | Perform algebraic operations on raster bands                    |
+| `concat_bands`      | Combine multiple single-band rasters into one multi-band raster |
+| `weighted_band_sum` | Compute weighted sum of all bands in a raster                   |
+
 ## 🛠️ Client Development
 
 Example usage of the tools:
@@ -430,7 +478,9 @@ For support, please open an issue in the GitHub repository.
 ## 🏆 Badges
 
 <div align="center">
-<!-- Glama AI will be added here -->
+  <a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
+    <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
+  </a>
   <br/><br/><br/>
   <a href="https://mcp.so/server/gis-mcp-server/mahdin75">
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
