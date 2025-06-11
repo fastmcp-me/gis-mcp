@@ -22,9 +22,10 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 ### Rasterio Demo
 
 <div align="center">
-  <video width="800" controls>
-    <source src="docs/gis-mcp_rasterio.mp4" type="video/mp4">
-  </video>
+  <a href="https://www.veed.io/view/95ff85f4-efbb-4154-9a04-d966c6ae1737?panel=share">
+    <br/>
+    <em>Click to watch the Rasterio demo video or go to docs folder</em>
+  </a>
 </div>
 
 ## 📋 Table of Contents
