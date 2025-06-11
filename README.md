@@ -479,7 +479,17 @@ For support, please open an issue in the GitHub repository.
 
 Join our Discord community for discussions, updates, and support:
 
-[![Discord](https://img.shields.io/discord/1234567890?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/dzkXZsZK)
+[![Join our Discord](https://img.shields.io/badge/Discord-Join%20our%20community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dzkXZsZK)
+
+## 👥 Contributors
+
+<a href="https://github.com/mahdin75/gis-mcp/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=mahdin75/gis-mcp" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+
+<br/>
 
 ## 🏆 Badges
 
@@ -492,14 +502,3 @@ Join our Discord community for discussions, updates, and support:
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
   </a>
 </div>
-
-## 👥 Contributors
-
-<a href="https://github.com/mahdin75/gis-mcp/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=mahdin75/gis-mcp" />
-</a>
-
-Made with [contrib.rocks](https://contrib.rocks).
-
-<br/>
-<br/>
