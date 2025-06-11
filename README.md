@@ -470,6 +470,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Model Context Protocol](https://github.com/anthropics/model-context-protocol) - The core MCP implementation
 - [Shapely](https://github.com/shapely/shapely) - Python package for manipulation and analysis of geometric objects
 - [PyProj](https://github.com/pyproj4/pyproj) - Python interface to PROJ library
+- [GeoPandas](https://github.com/geopandas/geopandas) - Python package for working with geospatial data
+- [Rasterio](https://github.com/rasterio/rasterio) - Python package for reading and writing geospatial raster data
 
 ## 📞 Support
 
