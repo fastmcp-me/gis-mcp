@@ -19,6 +19,14 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   <img src="docs/demo.gif" alt="GIS MCP Server Demo" width="800"/>
 </div>
 
+### Rasterio Demo
+
+<div align="center">
+  <video width="800" controls>
+    <source src="docs/gis-mcp_rasterio.mp4" type="video/mp4">
+  </video>
+</div>
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
