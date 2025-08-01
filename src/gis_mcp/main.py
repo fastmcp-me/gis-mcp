@@ -1835,6 +1835,71 @@ def getis_ord_g(
         return {"status": "error", "message": f"Failed to perform Getis-Ord G analysis: {str(e)}"}
 
 
+@mcp.tool()
+def dbscan_clustering(
+    shapefile_path: str,
+    target_crs: str = "EPSG:3395",
+    eps: float = 100000,
+    min_samples: int = 5
+) -> Dict[str, Any]:
+    """Perform DBSCAN clustering on spatial coordinates."""
+    try:
+        # Clean backticks from string parameters
+        shapefile_path = shapefile_path.replace("`", "")
+        target_crs = target_crs.replace("`", "")
+
+        # Validate input file
+        if not os.path.exists(shapefile_path):
+            logger.error(f"Shapefile not found: {shapefile_path}")
+            return {"status": "error", "message": f"Shapefile not found: {shapefile_path}"}
+
+        # Load GeoDataFrame
+        gdf = gpd.read_file(shapefile_path)
+
+        # Reproject to target CRS
+        gdf = gdf.to_crs(target_crs)
+
+        # Convert eps to degrees if using geographic CRS (e.g., EPSG:4326)
+        effective_eps = eps
+        unit = "meters"
+        if target_crs == "EPSG:4326":
+            effective_eps = eps / 111000
+            unit = "degrees"
+
+        # Extract coordinates for DBSCAN
+        coords = np.array(list(gdf.geometry.apply(lambda x: (x.x, x.y))))
+
+        # Run DBSCAN
+        dbscan = DBSCAN(eps=effective_eps, min_samples=min_samples, metric='euclidean').fit(coords)
+        gdf['dbscan_cluster'] = dbscan.labels_
+        num_clusters = len(set(dbscan.labels_)) - (1 if -1 in dbscan.labels_ else 0)
+        num_noise = list(dbscan.labels_).count(-1)
+
+        # Prepare GeoDataFrame preview
+        preview = gdf[['geometry', 'dbscan_cluster']].copy()
+        preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+        preview = preview.head(5).to_dict(orient="records")
+
+        return {
+            "status": "success",
+            "message": f"DBSCAN clustering completed successfully (eps: {effective_eps} {unit})",
+            "result": {
+                "shapefile_path": shapefile_path,
+                "dbscan_clustering": {
+                    "num_clusters": int(num_clusters),
+                    "num_noise_points": int(num_noise),
+                    "cluster_labels": dbscan.labels_[:10].tolist()
+                },
+                "data_preview": preview
+            }
+        }
+    
+    except Exception as e:
+        logger.error(f"Error performing DBSCAN clustering: {str(e)}")
+        return {"status": "error", "message": f"Failed to perform DBSCAN clustering: {str(e)}"}
+
+
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
@@ -1860,5 +1925,3 @@ def main():
 if __name__ == "__main__":
     main() 
 
-
-# print(getis_ord_g("/home/yasin/datasets/geo_tehran/house.shp"))
