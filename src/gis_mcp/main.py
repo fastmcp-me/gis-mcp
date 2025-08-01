@@ -18,6 +18,9 @@ import libpysal
 import esda
 import numpy as np
 from sklearn.cluster import DBSCAN
+import warnings
+warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output
+
 
 # MCP imports using the new SDK patterns
 from mcp.server.fastmcp import FastMCP
@@ -1755,6 +1758,83 @@ def weighted_band_sum(
     except Exception as e:
         raise ValueError(f"Failed to compute weighted sum: {e}")
 
+
+@mcp.tool()
+def getis_ord_g(
+    shapefile_path: str,
+    dependent_var: str = "LAND_USE",
+    target_crs: str = "EPSG:3395",
+    distance_threshold: float = 100000
+) -> Dict[str, Any]:
+    """Compute Getis-Ord G for global hot spot analysis."""
+    try:
+        # Clean backticks from string parameters
+        shapefile_path = shapefile_path.replace("`", "")
+        dependent_var = dependent_var.replace("`", "")
+        target_crs = target_crs.replace("`", "")
+
+        # Validate input file
+        if not os.path.exists(shapefile_path):
+            logger.error(f"Shapefile not found: {shapefile_path}")
+            return {"status": "error", "message": f"Shapefile not found: {shapefile_path}"}
+
+        # Load GeoDataFrame
+        gdf = gpd.read_file(shapefile_path)
+        
+        # Validate dependent variable
+        if dependent_var not in gdf.columns:
+            logger.error(f"Dependent variable '{dependent_var}' not found in columns")
+            return {"status": "error", "message": f"Dependent variable '{dependent_var}' not found in shapefile columns"}
+
+        # Reproject to target CRS
+        gdf = gdf.to_crs(target_crs)
+
+        # Convert distance_threshold to degrees if using geographic CRS (e.g., EPSG:4326)
+        effective_threshold = distance_threshold
+        unit = "meters"
+        if target_crs == "EPSG:4326":
+            effective_threshold = distance_threshold / 111000
+            unit = "degrees"
+
+        # Extract dependent data
+        dependent = gdf[dependent_var].values.astype(np.float64)
+
+        # Create distance-based spatial weights matrix
+        w = libpysal.weights.DistanceBand.from_dataframe(gdf, threshold=effective_threshold, binary=False)
+        w.transform = 'r'
+
+        # Handle islands
+        for island in w.islands:
+            w.weights[island] = [0] * len(w.weights[island])
+            w.cardinalities[island] = 0
+
+        # Getis-Ord G
+        getis = esda.G(dependent, w)
+
+        # Prepare GeoDataFrame preview
+        preview = gdf[['geometry', dependent_var]].copy()
+        preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+        preview = preview.head(5).to_dict(orient="records")
+
+        return {
+            "status": "success",
+            "message": f"Getis-Ord G analysis completed successfully (distance threshold: {effective_threshold} {unit})",
+            "result": {
+                "shapefile_path": shapefile_path,
+                "getis_ord_g": {
+                    "G": float(getis.G),
+                    "p_value": float(getis.p_sim),
+                    "z_score": float(getis.z_sim)
+                },
+                "data_preview": preview
+            }
+        }
+    
+    except Exception as e:
+        logger.error(f"Error performing Getis-Ord G analysis: {str(e)}")
+        return {"status": "error", "message": f"Failed to perform Getis-Ord G analysis: {str(e)}"}
+
+
 def main():
     """Main entry point for the GIS MCP server."""
     # Parse command-line arguments
@@ -1779,3 +1859,6 @@ def main():
 
 if __name__ == "__main__":
     main() 
+
+
+# print(getis_ord_g("/home/yasin/datasets/geo_tehran/house.shp"))
