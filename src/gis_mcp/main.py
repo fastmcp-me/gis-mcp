@@ -14,7 +14,10 @@ import tempfile
 from typing import Any, Dict, List, Optional, Union
 import geopandas as gpd
 import pandas as pd
-
+import libpysal
+import esda
+import numpy as np
+from sklearn.cluster import DBSCAN
 
 # MCP imports using the new SDK patterns
 from mcp.server.fastmcp import FastMCP
@@ -172,6 +175,16 @@ def get_rasterio_operations() -> Dict[str, List[str]]:
             "tile_raster",
             "raster_band_statistics",
             "extract_band",
+        ]
+    }
+
+@mcp.resource("gis://operations/spatial")
+def get_spatial_operations() -> Dict[str, List[str]]:
+    """List available spatial analysis operations."""
+    return {
+        "operations": [
+            "getis_ord_g",
+            "dbscan_clustering"
         ]
     }
 

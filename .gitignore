@@ -116,3 +116,6 @@ site/
 *.bak
 *.tmp
 *.temp
+
+# uv
+uv.lock
