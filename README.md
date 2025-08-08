@@ -499,6 +499,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [PyProj](https://github.com/pyproj4/pyproj) - Python interface to PROJ library
 - [GeoPandas](https://github.com/geopandas/geopandas) - Python package for working with geospatial data
 - [Rasterio](https://github.com/rasterio/rasterio) - Python package for reading and writing geospatial raster data
+- [PySAL](https://github.com/pysal/pysal) - PySAL, the Python spatial analysis library for geospatial data science with an emphasis on geospatial vector data written in Python.
+
 
 ## 📞 Support
 
