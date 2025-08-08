@@ -415,10 +415,17 @@ After configuration:
 #### ESDA
 
 Currently, the following functions from esda package are supported.
-
-| Tool          | Description |
-| ------------- | ----------- |
-| `getis_ord_g` |             |
+| Tool | Description |
+| ----------------- | ----------- |
+| `getis_ord_g` | Computes the Global Getis-Ord G statistic to detect spatial clustering of high or low values. |
+| `morans_i` | Computes the Global Moran’s I statistic to measure overall spatial autocorrelation. |
+| `gearys_c` | Calculates Global Geary’s C for spatial autocorrelation and local dissimilarity. |
+| `gamma_statistic` | Computes the Gamma index for spatial autocorrelation patterns. |
+| `moran_local` | Calculates Local Moran’s I for identifying local spatial clusters and outliers. |
+| `getis_ord_g_local` | Computes Local Getis-Ord G\* for detecting local hotspots and coldspots. |
+| `join_counts` | Performs Binary Join Counts test for spatial autocorrelation in categorical (binary) data. |
+| `join_counts_local` | Calculates Local Join Counts to detect clusters in binary spatial data. |
+| `adbscan` | Runs Adaptive Density-Based Spatial Clustering (A-DBSCAN) for spatial clustering based on coordinates. |
 
 ## 🛠️ Client Development
 

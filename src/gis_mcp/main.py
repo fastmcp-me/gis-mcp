@@ -186,6 +186,14 @@ def get_spatial_operations() -> Dict[str, List[str]]:
     return {
         "operations": [
             "getis_ord_g",
+            "morans_i",
+            "gearys_c",
+            "gamma_statistic",
+            "moran_local",
+            "getis_ord_g_local",
+            "join_counts",
+            "join_counts_local",
+            "adbscan"
         ]
     }
 
@@ -1832,6 +1840,229 @@ def getis_ord_g(
         logger.error(f"Error performing Getis-Ord G analysis: {str(e)}")
         return {"status": "error", "message": f"Failed to perform Getis-Ord G analysis: {str(e)}"}
 
+
+def pysal_load_data(shapefile_path: str, dependent_var: str, target_crs: str, distance_threshold: float):
+    """Common loader and weight creation for esda statistics."""
+    if not os.path.exists(shapefile_path):
+        return None, None, None, None, f"Shapefile not found: {shapefile_path}"
+
+    gdf = gpd.read_file(shapefile_path)
+    if dependent_var not in gdf.columns:
+        return None, None, None, None, f"Dependent variable '{dependent_var}' not found in shapefile columns"
+
+    gdf = gdf.to_crs(target_crs)
+
+    effective_threshold = distance_threshold
+    unit = "meters"
+    if target_crs.upper() == "EPSG:4326":
+        effective_threshold = distance_threshold / 111000
+        unit = "degrees"
+
+    y = gdf[dependent_var].values.astype(np.float64)
+    w = libpysal.weights.DistanceBand.from_dataframe(gdf, threshold=effective_threshold, binary=False)
+    w.transform = 'r'
+
+    for island in w.islands:
+        w.weights[island] = [0] * len(w.weights[island])
+        w.cardinalities[island] = 0
+
+    return gdf, y, w, (effective_threshold, unit), None
+
+
+@mcp.tool()
+def morans_i(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Compute Moran's I Global Autocorrelation Statistic."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.Moran(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).assign(
+        geometry=lambda df: df.geometry.apply(lambda g: g.wkt)
+    ).to_dict(orient="records")
+
+    return {
+        "status": "success",
+        "message": f"Moran's I completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "I": float(stat.I),
+            "p_value": float(stat.p_sim),
+            "z_score": float(stat.z_sim),
+            "data_preview": preview
+        }
+    }
+
+
+@mcp.tool()
+def gearys_c(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Compute Global Geary's C Autocorrelation Statistic."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.Geary(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).assign(
+        geometry=lambda df: df.geometry.apply(lambda g: g.wkt)
+    ).to_dict(orient="records")
+
+    return {
+        "status": "success",
+        "message": f"Geary's C completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "C": float(stat.C),
+            "p_value": float(stat.p_sim),
+            "z_score": float(stat.z_sim),
+            "data_preview": preview
+        }
+    }
+
+
+@mcp.tool()
+def gamma_statistic(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Compute Gamma Statistic for spatial autocorrelation."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.Gamma(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).assign(
+        geometry=lambda df: df.geometry.apply(lambda g: g.wkt)
+    ).to_dict(orient="records")
+
+    return {
+        "status": "success",
+        "message": f"Gamma Statistic completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "Gamma": float(stat.gamma),
+            "p_value": float(stat.p_value) if hasattr(stat, "p_value") else None,
+            "data_preview": preview
+        }
+    }
+
+
+@mcp.tool()
+def moran_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
+                distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Local Moran's I."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.Moran_Local(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).copy()
+    preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+
+    # Return local statistics array summary
+    return {
+        "status": "success",
+        "message": f"Local Moran's I completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "Is": stat.Is.tolist(),
+            "p_values": stat.p_sim.tolist(),
+            "z_scores": stat.z_sim.tolist(),
+            "data_preview": preview.to_dict(orient="records")
+        }
+    }
+
+
+@mcp.tool()
+def getis_ord_g_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
+                      distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Local Getis-Ord G."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.G_Local(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).copy()
+    preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+
+    return {
+        "status": "success",
+        "message": f"Local Getis-Ord G completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "G_local": stat.Gs.tolist(),
+            "p_values": stat.p_sim.tolist(),
+            "z_scores": stat.z_sim.tolist(),
+            "data_preview": preview.to_dict(orient="records")
+        }
+    }
+
+
+@mcp.tool()
+def join_counts(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
+                distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Global Binary Join Counts."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    # Join counts requires binary/categorical data - user must ensure y is binary (0/1 or True/False)
+    stat = esda.Join_Counts(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).copy()
+    preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+
+    return {
+        "status": "success",
+        "message": f"Join Counts completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "join_counts": stat.jc,
+            "expected": stat.expected,
+            "variance": stat.variance,
+            "z_score": stat.z_score,
+            "p_value": stat.p_value,
+            "data_preview": preview.to_dict(orient="records")
+        }
+    }
+
+
+@mcp.tool()
+def join_counts_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
+                      distance_threshold: float = 100000) -> Dict[str, Any]:
+    """Local Join Counts."""
+    gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
+    if err:
+        return {"status": "error", "message": err}
+
+    stat = esda.Join_Counts_Local(y, w)
+    preview = gdf[['geometry', dependent_var]].head(5).copy()
+    preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+
+    return {
+        "status": "success",
+        "message": f"Local Join Counts completed successfully (threshold: {threshold} {unit})",
+        "result": {
+            "local_join_counts": stat.local_join_counts.tolist(),
+            "data_preview": preview.to_dict(orient="records")
+        }
+    }
+
+
+@mcp.tool()
+def adbscan(shapefile_path: str, dependent_var: str = None, target_crs: str = "EPSG:4326",
+            distance_threshold: float = 100000, eps: float = 0.1, min_samples: int = 5) -> Dict[str, Any]:
+    """Adaptive DBSCAN clustering (requires coordinates, no dependent_var)."""
+    if not os.path.exists(shapefile_path):
+        return {"status": "error", "message": f"Shapefile not found: {shapefile_path}"}
+    gdf = gpd.read_file(shapefile_path)
+    gdf = gdf.to_crs(target_crs)
+
+    coords = np.array(list(gdf.geometry.apply(lambda g: (g.x, g.y))))
+    stat = esda.adbscan.ADBSCAN(coords, eps=eps, min_samples=min_samples)
+
+    preview = gdf[['geometry']].head(5).copy()
+    preview['geometry'] = preview['geometry'].apply(lambda g: g.wkt)
+
+    return {
+        "status": "success",
+        "message": f"A-DBSCAN clustering completed successfully (eps={eps}, min_samples={min_samples})",
+        "result": {
+            "labels": stat.labels_.tolist(),
+            "core_sample_indices": stat.core_sample_indices_.tolist(),
+            "components": stat.components_.tolist() if hasattr(stat, "components_") else None,
+            "data_preview": preview.to_dict(orient="records")
+        }
+    }
 
 
 def main():
