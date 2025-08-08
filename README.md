@@ -11,7 +11,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 > Alpha
 >
-> Version 0.3.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
+> Version 0.4.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -54,6 +54,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
     - [Basic Raster Operations](#basic-raster-operations)
     - [Raster Processing](#raster-processing)
     - [Raster Analysis](#raster-analysis)
+  - [Pysal Operations](#pysal-operations)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -408,6 +409,16 @@ After configuration:
 | `raster_algebra`    | Perform algebraic operations on raster bands                    |
 | `concat_bands`      | Combine multiple single-band rasters into one multi-band raster |
 | `weighted_band_sum` | Compute weighted sum of all bands in a raster                   |
+
+### Pysal Operations
+
+#### ESDA
+
+Currently, the following functions from esda package are supported.
+
+| Tool          | Description |
+| ------------- | ----------- |
+| `getis_ord_g` |             |
 
 ## 🛠️ Client Development
 
