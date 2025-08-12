@@ -1,0 +1,75 @@
+site_name: GIS MCP Server
+site_description: Model Context Protocol server for GIS operations
+site_url: https://Sabakazemii.github.io/gis-mcp/
+repo_name: Sabakazemii/gis-mcp
+repo_url: https://github.com/Sabakazemii/gis-mcp
+
+theme:
+  name: material
+  features:
+    - navigation.top
+    - navigation.sections
+    - content.code.copy
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+nav:
+  - HOME: index.md
+  - Getting Started: getting-started.md
+  - DOCUMENTATIONS:
+      - Installations:
+          - Cloud: install/cloud.md
+          - Docker: install/docker.md
+          - Pip · UV · Conda: install/pip-uv-conda.md
+          - Developers: install/developers.md
+      - API Reference:
+          - Shapely:
+              - Overview: api/shapely/README.md
+              - buffer: api/shapely/buffer.md
+              - intersection: api/shapely/intersection.md
+              - union: api/shapely/union.md
+              - difference: api/shapely/difference.md
+              - centroid: api/shapely/centroid.md
+          - PyProj:
+              - Overview: api/pyproj/README.md
+              - transform_coordinates: api/pyproj/transform_coordinates.md
+              - project_geometry: api/pyproj/project_geometry.md
+              - get_crs_info: api/pyproj/get_crs_info.md
+          - GeoPandas:
+              - Overview: api/geopandas/README.md
+              - read_file_gpd: api/geopandas/read_file_gpd.md
+              - merge_gpd: api/geopandas/merge_gpd.md
+              - to_file_gpd: api/geopandas/to_file_gpd.md
+          - Rasterio:
+              - Overview: api/rasterio/README.md
+              - compute_ndvi: api/rasterio/compute_ndvi.md
+              - clip_raster_with_shapefile: api/rasterio/clip_raster_with_shapefile.md
+              - reproject_raster: api/rasterio/reproject_raster.md
+          - PySAL:
+              - Overview: api/pysal/README.md
+              - morans_i: api/pysal/morans_i.md
+              - gearys_c: api/pysal/gearys_c.md
+              - getis_ord_g: api/pysal/getis_ord_g.md
+              - moran_local: api/pysal/moran_local.md
+      - Contributing: contributing.md
+  - Showcases (Examples):
+      - Researcher: showcases/researcher.md
+      - Programmers: showcases/programmers.md
+      - Technicians: showcases/technicians.md
+  - ABOUT: about.md
+  - Connect to the GitHub: https://github.com/Sabakazemii/gis-mcp
+  - Support:
+      - Link to Discord: https://discord.gg/<YOUR_INVITE>
+      - Link to GitHub issues: https://github.com/Sabakazemii/gis-mcp/issues
+
+
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
