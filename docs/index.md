@@ -19,13 +19,15 @@ hide:
 html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 .md-header, .md-footer, .md-sidebar--primary, .md-sidebar--secondary { display: none; }
 .md-container { max-width: none; width: 100%; margin: 0; padding: 0; }
-.md-main { padding-top: 0 !important; min-height: 100vh; }
+.md-main { padding-top: 0 !important; margin-top: 0 !important; min-height: 100vh; }
 .md-main__inner { margin: 0; max-width: none; width: 100%; }
 .md-grid { max-width: none; width: 100%; padding: 0; }
 .md-content { margin: 0; padding: 0; max-width: none; width: 100%; }
 .md-content__inner { margin: 0; padding: 0; max-width: none; width: 100%; }
 
 :root {
+  /* Cancel default header offset when header is hidden */
+  --md-header-height: 0px;
   --nav-height: 64px;
   --brand-accent: #7cc5ff;
   --brand-blue-900: #0b1b2b;

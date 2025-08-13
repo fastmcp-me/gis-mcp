@@ -1,20 +1,27 @@
 ### Shapely Tools
 
-High-level geometric operations exposed via MCP. Core documented tools:
+High-level geometric operations exposed via MCP. All tools accept and return geometries as WKT strings.
 
 - [buffer](buffer.md)
 - [intersection](intersection.md)
 - [union](union.md)
 - [difference](difference.md)
-- [centroid](centroid.md) (tool name: `get_centroid`)
-
-Additional available tools in the server not listed in the sidebar:
-
-- symmetric_difference, convex_hull, envelope, minimum_rotated_rectangle
-- get_bounds, get_coordinates, get_geometry_type
-- rotate_geometry, scale_geometry, translate_geometry
-- triangulate_geometry, voronoi, unary_union_geometries
-- get_length, get_area
-- is_valid, make_valid, simplify
-
-All tools accept and return geometries as WKT strings.
+- [centroid](centroid.md) (tool: `get_centroid`)
+- [symmetric_difference](symmetric_difference.md)
+- [convex_hull](convex_hull.md)
+- [envelope](envelope.md)
+- [minimum_rotated_rectangle](minimum_rotated_rectangle.md)
+- [get_bounds](get_bounds.md)
+- [get_coordinates](get_coordinates.md)
+- [get_geometry_type](get_geometry_type.md)
+- [rotate_geometry](rotate_geometry.md)
+- [scale_geometry](scale_geometry.md)
+- [translate_geometry](translate_geometry.md)
+- [triangulate_geometry](triangulate_geometry.md)
+- [voronoi](voronoi.md)
+- [unary_union_geometries](unary_union_geometries.md)
+- [get_length](get_length.md)
+- [get_area](get_area.md)
+- [is_valid](is_valid.md)
+- [make_valid](make_valid.md)
+- [simplify](simplify.md)
