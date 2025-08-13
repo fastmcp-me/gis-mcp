@@ -1,8 +1,8 @@
 site_name: GIS MCP Server
 site_description: Model Context Protocol server for GIS operations
-site_url: https://Sabakazemii.github.io/gis-mcp/
-repo_name: Sabakazemii/gis-mcp
-repo_url: https://github.com/Sabakazemii/gis-mcp
+site_url: https://gis-mcp.com
+repo_name: mahdin75/gis-mcp
+repo_url: https://github.com/mahdin75/gis-mcp
 
 theme:
   name: material
