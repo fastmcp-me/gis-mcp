@@ -1,3 +1,11 @@
+---
+title: Home
+hide:
+  - navigation
+  - toc
+  - footer
+---
+
 <!--
   Landing page for GIS MCP Server
   - Fullscreen dark-blue hero
@@ -7,6 +15,13 @@
 -->
 
 <style>
+/* Remove MkDocs Material wrappers on the homepage only */
+.md-header, .md-footer, .md-sidebar--primary, .md-sidebar--secondary { display: none; }
+.md-main { padding-top: 0 !important; }
+.md-main__inner { margin: 0; }
+.md-content { margin: 0; padding: 0; }
+.md-content__inner { margin: 0; padding: 0; max-width: none; }
+
 :root {
   --nav-height: 64px;
   --brand-accent: #7cc5ff;
