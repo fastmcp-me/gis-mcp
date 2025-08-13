@@ -16,11 +16,14 @@ hide:
 
 <style>
 /* Remove MkDocs Material wrappers on the homepage only */
+html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 .md-header, .md-footer, .md-sidebar--primary, .md-sidebar--secondary { display: none; }
-.md-main { padding-top: 0 !important; }
-.md-main__inner { margin: 0; }
-.md-content { margin: 0; padding: 0; }
-.md-content__inner { margin: 0; padding: 0; max-width: none; }
+.md-container { max-width: none; width: 100%; margin: 0; padding: 0; }
+.md-main { padding-top: 0 !important; min-height: 100vh; }
+.md-main__inner { margin: 0; max-width: none; width: 100%; }
+.md-grid { max-width: none; width: 100%; padding: 0; }
+.md-content { margin: 0; padding: 0; max-width: none; width: 100%; }
+.md-content__inner { margin: 0; padding: 0; max-width: none; width: 100%; }
 
 :root {
   --nav-height: 64px;
@@ -35,6 +38,7 @@ hide:
 
 .landing-page {
   position: relative;
+  width: 100vw;
   min-height: 100vh;
   padding: 0;
   margin: 0;
