@@ -5,5 +5,4 @@ Welcome! This site documents the **GIS MCP Server**: an MCP server that lets LLM
 - Start here: [Getting Started](getting-started.md)
 - Install: [Installations](install/cloud.md)
 - API Reference: [APIs by library](api/shapely/README.md)
-- Examples: [Showcases](showcases/researcher.md)
 - Contribute: [Contributing](contributing.md)
