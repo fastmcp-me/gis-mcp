@@ -19,9 +19,9 @@ nav:
   - Getting Started: getting-started.md
   - DOCUMENTATIONS:
       - Installations:
-          - Cloud: install/cloud.md
-          - Docker: install/docker.md
-          - Pip · UV · Conda: install/pip-uv-conda.md
+          - Overview: install/README.md
+          - Smithery: install/smithery.md
+          - pip: install/pip.md
           - Developers: install/developers.md
       - API Reference:
           - Shapely:
@@ -62,8 +62,6 @@ nav:
   - Support:
       - Link to Discord: https://discord.gg/<YOUR_INVITE>
       - Link to GitHub issues: https://github.com/Sabakazemii/gis-mcp/issues
-
-
 
 plugins:
   - search
