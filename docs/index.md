@@ -24,6 +24,7 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 .md-grid { max-width: none; width: 100%; padding: 0; }
 .md-content { margin: 0; padding: 0; max-width: none; width: 100%; }
 .md-content__inner { margin: 0; padding: 0; max-width: none; width: 100%; }
+.md-content__inner:before { content: ""; display: block; height: 0 !important; }
 
 :root {
   /* Cancel default header offset when header is hidden */
@@ -35,7 +36,7 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
   --brand-blue-700: #143352;
   --text-on-dark: #e6eef7;
   --muted-on-dark: #b8c7d9;
-  --hero-bg-image: none; /* e.g. url('images/your-bg.jpg') */
+  --hero-bg-image: url('bg-1.png');
 }
 
 .landing-page {
