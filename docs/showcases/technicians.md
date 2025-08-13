@@ -1,1 +1,0 @@
-# Showcases — Technicians

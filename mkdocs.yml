@@ -16,7 +16,7 @@ theme:
 
 nav:
   - HOME: index.md
-  #   - Getting Started: getting-started.md
+  - Getting Started: getting-started.md
   - DOCUMENTATIONS:
       - Installations:
           - Overview: install/README.md
@@ -31,27 +31,69 @@ nav:
               - union: api/shapely/union.md
               - difference: api/shapely/difference.md
               - centroid: api/shapely/centroid.md
+              - symmetric_difference: api/shapely/symmetric_difference.md
+              - convex_hull: api/shapely/convex_hull.md
+              - envelope: api/shapely/envelope.md
+              - minimum_rotated_rectangle: api/shapely/minimum_rotated_rectangle.md
+              - get_bounds: api/shapely/get_bounds.md
+              - get_coordinates: api/shapely/get_coordinates.md
+              - get_geometry_type: api/shapely/get_geometry_type.md
+              - rotate_geometry: api/shapely/rotate_geometry.md
+              - scale_geometry: api/shapely/scale_geometry.md
+              - translate_geometry: api/shapely/translate_geometry.md
+              - triangulate_geometry: api/shapely/triangulate_geometry.md
+              - voronoi: api/shapely/voronoi.md
+              - unary_union_geometries: api/shapely/unary_union_geometries.md
+              - get_length: api/shapely/get_length.md
+              - get_area: api/shapely/get_area.md
+              - is_valid: api/shapely/is_valid.md
+              - make_valid: api/shapely/make_valid.md
+              - simplify: api/shapely/simplify.md
           - PyProj:
               - Overview: api/pyproj/README.md
               - transform_coordinates: api/pyproj/transform_coordinates.md
               - project_geometry: api/pyproj/project_geometry.md
               - get_crs_info: api/pyproj/get_crs_info.md
+              - get_available_crs: api/pyproj/get_available_crs.md
+              - get_utm_zone: api/pyproj/get_utm_zone.md
+              - get_utm_crs: api/pyproj/get_utm_crs.md
+              - get_geocentric_crs: api/pyproj/get_geocentric_crs.md
+              - get_geod_info: api/pyproj/get_geod_info.md
+              - calculate_geodetic_distance: api/pyproj/calculate_geodetic_distance.md
+              - calculate_geodetic_point: api/pyproj/calculate_geodetic_point.md
+              - calculate_geodetic_area: api/pyproj/calculate_geodetic_area.md
           - GeoPandas:
               - Overview: api/geopandas/README.md
               - read_file_gpd: api/geopandas/read_file_gpd.md
               - merge_gpd: api/geopandas/merge_gpd.md
               - to_file_gpd: api/geopandas/to_file_gpd.md
+              - append_gpd: api/geopandas/append_gpd.md
           - Rasterio:
               - Overview: api/rasterio/README.md
               - compute_ndvi: api/rasterio/compute_ndvi.md
               - clip_raster_with_shapefile: api/rasterio/clip_raster_with_shapefile.md
               - reproject_raster: api/rasterio/reproject_raster.md
+              - metadata_raster: api/rasterio/metadata_raster.md
+              - get_raster_crs: api/rasterio/get_raster_crs.md
+              - extract_band: api/rasterio/extract_band.md
+              - raster_band_statistics: api/rasterio/raster_band_statistics.md
+              - raster_histogram: api/rasterio/raster_histogram.md
+              - resample_raster: api/rasterio/resample_raster.md
+              - tile_raster: api/rasterio/tile_raster.md
+              - raster_algebra: api/rasterio/raster_algebra.md
+              - concat_bands: api/rasterio/concat_bands.md
+              - weighted_band_sum: api/rasterio/weighted_band_sum.md
           - PySAL:
               - Overview: api/pysal/README.md
               - morans_i: api/pysal/morans_i.md
               - gearys_c: api/pysal/gearys_c.md
               - getis_ord_g: api/pysal/getis_ord_g.md
               - moran_local: api/pysal/moran_local.md
+              - gamma_statistic: api/pysal/gamma_statistic.md
+              - getis_ord_g_local: api/pysal/getis_ord_g_local.md
+              - join_counts: api/pysal/join_counts.md
+              - join_counts_local: api/pysal/join_counts_local.md
+              - adbscan: api/pysal/adbscan.md
       - Contributing: contributing.md
   #   - Showcases (Examples):
   #       - Researcher: showcases/researcher.md
