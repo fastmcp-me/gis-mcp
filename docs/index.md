@@ -155,6 +155,7 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
   font-size: clamp(34px, 6vw, 64px);
   line-height: 1.05;
   letter-spacing: 0.2px;
+  color: #ffffff;
 }
 
 .slogan {
@@ -245,6 +246,6 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
         <a class="btn secondary" href="api/shapely/">Explore API</a>
       </div>
     </div>
-    <div class="footnote">Dark blue theme · Add your full-screen background by setting <code>--hero-bg-image</code>.</div>
+    
   </section>
 </div>
