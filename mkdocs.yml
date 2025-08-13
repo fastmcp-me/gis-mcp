@@ -106,6 +106,12 @@ nav:
 
 plugins:
   - search
+  - mkdocs-multiversion:
+      include:
+        - v0.3.0
+      exclude:
+        - v0.1.0
+        - v0.2.0
 
 markdown_extensions:
   - admonition
