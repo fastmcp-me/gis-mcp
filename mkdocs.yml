@@ -16,7 +16,7 @@ theme:
 
 nav:
   - HOME: index.md
-  - Getting Started: getting-started.md
+  #   - Getting Started: getting-started.md
   - DOCUMENTATIONS:
       - Installations:
           - Overview: install/README.md
@@ -53,15 +53,14 @@ nav:
               - getis_ord_g: api/pysal/getis_ord_g.md
               - moran_local: api/pysal/moran_local.md
       - Contributing: contributing.md
-  - Showcases (Examples):
-      - Researcher: showcases/researcher.md
-      - Programmers: showcases/programmers.md
-      - Technicians: showcases/technicians.md
-  - ABOUT: about.md
-  - Connect to the GitHub: https://github.com/Sabakazemii/gis-mcp
+  #   - Showcases (Examples):
+  #       - Researcher: showcases/researcher.md
+  #       - Programmers: showcases/programmers.md
+  #       - Technicians: showcases/technicians.md
+  #   - ABOUT: about.md
   - Support:
-      - Link to Discord: https://discord.gg/<YOUR_INVITE>
-      - Link to GitHub issues: https://github.com/Sabakazemii/gis-mcp/issues
+      - Link to Discord: https://discord.gg/dzkXZsZK
+      - Link to GitHub issues: https://github.com/mahdin75/gis-mcp/issues
 
 plugins:
   - search
