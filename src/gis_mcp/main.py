@@ -17,9 +17,10 @@ import pandas as pd
 import libpysal
 import esda
 import numpy as np
+from libpysal import weights
+from libpysal.weights import W
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output
-
 
 # MCP imports using the new SDK patterns
 from mcp.server.fastmcp import FastMCP
@@ -2064,6 +2065,59 @@ def adbscan(shapefile_path: str, dependent_var: str = None, target_crs: str = "E
         }
     }
 
+@mcp.tool()
+def weights_from_shapefile(shapefile_path: str, contiguity: str = "queen", id_field: Optional[str] = None) -> Dict[str, Any]:
+
+    """Create a spatial weights (W) from a shapefile using contiguity.
+
+    - contiguity: 'queen' or 'rook' (default 'queen')
+    - id_field: optional attribute name to use as observation IDs
+    """
+    try:
+        if not os.path.exists(shapefile_path):
+            return {"status": "error", "message": f"Shapefile not found: {shapefile_path}"}
+
+        contiguity_lower = (contiguity or "").lower()
+        if contiguity_lower == "queen":
+            w = libpysal.weights.Queen.from_shapefile(shapefile_path, idVariable=id_field)
+        elif contiguity_lower == "rook":
+            w = libpysal.weights.Rook.from_shapefile(shapefile_path, idVariable=id_field)
+        else:
+            # Fallback to generic W loader if an unrecognized contiguity is provided
+            w = libpysal.weights.W.from_shapefile(shapefile_path, idVariable=id_field)
+
+        ids = w.id_order
+        neighbor_counts = [w.cardinalities[i] for i in ids]
+        islands = list(w.islands) if hasattr(w, "islands") else []
+
+        preview_ids = ids[:5]
+        neighbors_preview = {i: w.neighbors.get(i, []) for i in preview_ids}
+        weights_preview = {i: w.weights.get(i, []) for i in preview_ids}
+
+        result = {
+            "n": int(w.n),
+            "id_count": int(len(ids)),
+            "id_field": id_field,
+            "contiguity": contiguity_lower if contiguity_lower in {"queen", "rook"} else "generic",
+            "neighbors_stats": {
+                "min": int(min(neighbor_counts)) if neighbor_counts else 0,
+                "max": int(max(neighbor_counts)) if neighbor_counts else 0,
+                "mean": float(np.mean(neighbor_counts)) if neighbor_counts else 0.0,
+            },
+            "islands": islands,
+            "neighbors_preview": neighbors_preview,
+            "weights_preview": weights_preview,
+        }
+
+        return {
+            "status": "success",
+            "message": "Spatial weights constructed successfully",
+            "result": result,
+        }
+
+    except Exception as e:
+        logger.error(f"Error creating spatial weights from shapefile: {str(e)}")
+        return {"status": "error", "message": f"Failed to create spatial weights: {str(e)}"}
 
 def main():
     """Main entry point for the GIS MCP server."""
