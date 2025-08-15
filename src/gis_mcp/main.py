@@ -2189,6 +2189,73 @@ def distance_band_weights(
         return {"status": "error", "message": f"Failed to create DistanceBand weights: {str(e)}"}
 
 
+@mcp.tool()
+def knn_weights(
+    data_path: str,
+    k: int,
+    id_field: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Create a k-nearest neighbors spatial weights (W) object from point data.
+
+    - data_path: path to point shapefile or GeoPackage
+    - k: number of nearest neighbors
+    - id_field: optional attribute name to use as observation IDs
+    """
+    try:
+        if not os.path.exists(data_path):
+            return {"status": "error", "message": f"Data file not found: {data_path}"}
+
+        gdf = gpd.read_file(data_path)
+
+        if gdf.empty:
+            return {"status": "error", "message": "Input file contains no features"}
+
+        # Extract coordinates
+        coords = [(geom.x, geom.y) for geom in gdf.geometry]
+
+        # Create KNN weights
+        if id_field and id_field in gdf.columns:
+            ids = gdf[id_field].tolist()
+            w = weights.KNN(coords, k=k, ids=ids)
+        else:
+            w = weights.KNN(coords, k=k)
+
+        ids = w.id_order
+        neighbor_counts = [w.cardinalities[i] for i in ids]
+        islands = list(w.islands) if hasattr(w, "islands") else []
+
+        # Previews
+        preview_ids = ids[:5]
+        neighbors_preview = {i: w.neighbors.get(i, []) for i in preview_ids}
+        weights_preview = {i: w.weights.get(i, []) for i in preview_ids}
+
+        result = {
+            "n": int(w.n),
+            "id_count": len(ids),
+            "k": k,
+            "id_field": id_field,
+            "neighbors_stats": {
+                "min": int(min(neighbor_counts)) if neighbor_counts else 0,
+                "max": int(max(neighbor_counts)) if neighbor_counts else 0,
+                "mean": float(np.mean(neighbor_counts)) if neighbor_counts else 0.0,
+            },
+            "islands": islands,
+            "neighbors_preview": neighbors_preview,
+            "weights_preview": weights_preview,
+        }
+
+        return {
+            "status": "success",
+            "message": "KNN spatial weights constructed successfully",
+            "result": result,
+        }
+
+    except Exception as e:
+        logger.error(f"Error creating KNN weights: {str(e)}")
+        return {"status": "error", "message": f"Failed to create KNN weights: {str(e)}"}
+
+
 
 
 
