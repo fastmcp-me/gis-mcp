@@ -93,7 +93,12 @@ nav:
               - getis_ord_g_local: api/pysal/getis_ord_g_local.md
               - join_counts: api/pysal/join_counts.md
               - join_counts_local: api/pysal/join_counts_local.md
-              - adbscan: api/pysal/adbscan.md
+              - build_and_transform_weights: api/pysal/build_transform_and_save_weights.md
+              - build_transform_and_save_weights: api/pysal/build_transform_and_save_weights.md
+              - distance_band_weights: api/pysal/distance_band_weights.md
+              - knn_weights: api/pysal/knn_weights.md
+              - ols_with_spatial_diagnostics_safe: api/pysal/ols_with_spatial_diagnostics_safe.md
+              - weights_from_shapefile: api/pysal/weights_from_shapefile.md
       - Contributing: contributing.md
   #   - Showcases (Examples):
   #       - Researcher: showcases/researcher.md
