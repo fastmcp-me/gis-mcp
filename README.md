@@ -11,7 +11,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 > Alpha
 >
-> Version 0.4.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
+> Version 0.5.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -500,7 +500,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [GeoPandas](https://github.com/geopandas/geopandas) - Python package for working with geospatial data
 - [Rasterio](https://github.com/rasterio/rasterio) - Python package for reading and writing geospatial raster data
 - [PySAL](https://github.com/pysal/pysal) - PySAL, the Python spatial analysis library for geospatial data science with an emphasis on geospatial vector data written in Python.
-
 
 ## 📞 Support
 
