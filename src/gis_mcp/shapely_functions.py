@@ -2,13 +2,13 @@
 import os
 import logging
 from typing import Any, Dict, List, Optional
-from mcp.server.fastmcp import mcp
+from mcp import gis_mcp
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 # Resource handlers for Shapely operations
-@mcp.resource("gis://operations/basic")
+@gis_mcp.resource("gis://operations/basic")
 def get_basic_operations() -> Dict[str, List[str]]:
     """List available basic geometric operations."""
     return {
@@ -21,7 +21,7 @@ def get_basic_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/geometric")
+@gis_mcp.resource("gis://operations/geometric")
 def get_geometric_properties() -> Dict[str, List[str]]:
     """List available geometric property operations."""
     return {
@@ -36,7 +36,7 @@ def get_geometric_properties() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/transformations")
+@gis_mcp.resource("gis://operations/transformations")
 def get_transformations() -> Dict[str, List[str]]:
     """List available geometric transformations."""
     return {
@@ -47,7 +47,7 @@ def get_transformations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/advanced")
+@gis_mcp.resource("gis://operations/advanced")
 def get_advanced_operations() -> Dict[str, List[str]]:
     """List available advanced operations."""
     return {
@@ -58,7 +58,7 @@ def get_advanced_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/measurements")
+@gis_mcp.resource("gis://operations/measurements")
 def get_measurements() -> Dict[str, List[str]]:
     """List available measurement operations."""
     return {
@@ -68,7 +68,7 @@ def get_measurements() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/validation")
+@gis_mcp.resource("gis://operations/validation")
 def get_validation_operations() -> Dict[str, List[str]]:
     """List available validation operations."""
     return {
@@ -79,7 +79,7 @@ def get_validation_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://operations/shapely_util")
+@gis_mcp.resource("gis://operations/shapely_util")
 def get_shapely_util_operations() -> Dict[str, List[str]]:
     """List available Shapely utility/advanced operations."""
     return {
@@ -93,7 +93,7 @@ def get_shapely_util_operations() -> Dict[str, List[str]]:
     }
 
 # Basic geometric operations
-@mcp.tool()
+@gis_mcp.tool()
 def buffer(geometry: str, distance: float, resolution: int = 16, 
         join_style: int = 1, mitre_limit: float = 5.0, 
         single_sided: bool = False) -> Dict[str, Any]:
@@ -117,7 +117,7 @@ def buffer(geometry: str, distance: float, resolution: int = 16,
         logger.error(f"Error creating buffer: {str(e)}")
         raise ValueError(f"Failed to create buffer: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def intersection(geometry1: str, geometry2: str) -> Dict[str, Any]:
     """Find intersection of two geometries."""
     try:
@@ -134,7 +134,7 @@ def intersection(geometry1: str, geometry2: str) -> Dict[str, Any]:
         logger.error(f"Error creating intersection: {str(e)}")
         raise ValueError(f"Failed to create intersection: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def union(geometry1: str, geometry2: str) -> Dict[str, Any]:
     """Combine two geometries."""
     try:
@@ -151,7 +151,7 @@ def union(geometry1: str, geometry2: str) -> Dict[str, Any]:
         logger.error(f"Error creating union: {str(e)}")
         raise ValueError(f"Failed to create union: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def difference(geometry1: str, geometry2: str) -> Dict[str, Any]:
     """Find difference between geometries."""
     try:
@@ -168,7 +168,7 @@ def difference(geometry1: str, geometry2: str) -> Dict[str, Any]:
         logger.error(f"Error creating difference: {str(e)}")
         raise ValueError(f"Failed to create difference: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def symmetric_difference(geometry1: str, geometry2: str) -> Dict[str, Any]:
     """Find symmetric difference between geometries."""
     try:
@@ -186,7 +186,7 @@ def symmetric_difference(geometry1: str, geometry2: str) -> Dict[str, Any]:
         raise ValueError(f"Failed to create symmetric difference: {str(e)}")
 
 # Geometric properties
-@mcp.tool()
+@gis_mcp.tool()
 def convex_hull(geometry: str) -> Dict[str, Any]:
     """Calculate convex hull of a geometry."""
     try:
@@ -202,7 +202,7 @@ def convex_hull(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error creating convex hull: {str(e)}")
         raise ValueError(f"Failed to create convex hull: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def envelope(geometry: str) -> Dict[str, Any]:
     """Get bounding box of a geometry."""
     try:
@@ -218,7 +218,7 @@ def envelope(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error creating envelope: {str(e)}")
         raise ValueError(f"Failed to create envelope: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def minimum_rotated_rectangle(geometry: str) -> Dict[str, Any]:
     """Get minimum rotated rectangle of a geometry."""
     try:
@@ -234,7 +234,7 @@ def minimum_rotated_rectangle(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error creating minimum rotated rectangle: {str(e)}")
         raise ValueError(f"Failed to create minimum rotated rectangle: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_centroid(geometry: str) -> Dict[str, Any]:
     """Get the centroid of a geometry."""
     try:
@@ -250,7 +250,7 @@ def get_centroid(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error calculating centroid: {str(e)}")
         raise ValueError(f"Failed to calculate centroid: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_bounds(geometry: str) -> Dict[str, Any]:
     """Get the bounds of a geometry."""
     try:
@@ -265,7 +265,7 @@ def get_bounds(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error calculating bounds: {str(e)}")
         raise ValueError(f"Failed to calculate bounds: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_coordinates(geometry: str) -> Dict[str, Any]:
     """Get the coordinates of a geometry."""
     try:
@@ -280,7 +280,7 @@ def get_coordinates(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error getting coordinates: {str(e)}")
         raise ValueError(f"Failed to get coordinates: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_geometry_type(geometry: str) -> Dict[str, Any]:
     """Get the type of a geometry."""
     try:
@@ -296,7 +296,7 @@ def get_geometry_type(geometry: str) -> Dict[str, Any]:
         raise ValueError(f"Failed to get geometry type: {str(e)}")
 
 # Transformations
-@mcp.tool()
+@gis_mcp.tool()
 def rotate_geometry(geometry: str, angle: float, origin: str = "center", 
                 use_radians: bool = False) -> Dict[str, Any]:
     """Rotate a geometry."""
@@ -314,7 +314,7 @@ def rotate_geometry(geometry: str, angle: float, origin: str = "center",
         logger.error(f"Error rotating geometry: {str(e)}")
         raise ValueError(f"Failed to rotate geometry: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def scale_geometry(geometry: str, xfact: float, yfact: float, 
                 origin: str = "center") -> Dict[str, Any]:
     """Scale a geometry."""
@@ -332,7 +332,7 @@ def scale_geometry(geometry: str, xfact: float, yfact: float,
         logger.error(f"Error scaling geometry: {str(e)}")
         raise ValueError(f"Failed to scale geometry: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def translate_geometry(geometry: str, xoff: float, yoff: float, 
                     zoff: float = 0.0) -> Dict[str, Any]:
     """Translate a geometry."""
@@ -351,7 +351,7 @@ def translate_geometry(geometry: str, xoff: float, yoff: float,
         raise ValueError(f"Failed to translate geometry: {str(e)}")
 
 # Advanced operations
-@mcp.tool()
+@gis_mcp.tool()
 def triangulate_geometry(geometry: str) -> Dict[str, Any]:
     """Create a triangulation of a geometry."""
     try:
@@ -368,7 +368,7 @@ def triangulate_geometry(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error creating triangulation: {str(e)}")
         raise ValueError(f"Failed to create triangulation: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def voronoi(geometry: str) -> Dict[str, Any]:
     """Create a Voronoi diagram from points."""
     try:
@@ -385,7 +385,7 @@ def voronoi(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error creating Voronoi diagram: {str(e)}")
         raise ValueError(f"Failed to create Voronoi diagram: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def unary_union_geometries(geometries: List[str]) -> Dict[str, Any]:
     """Create a union of multiple geometries."""
     try:
@@ -403,7 +403,7 @@ def unary_union_geometries(geometries: List[str]) -> Dict[str, Any]:
         raise ValueError(f"Failed to create union: {str(e)}")
 
 # Measurements
-@mcp.tool()
+@gis_mcp.tool()
 def get_length(geometry: str) -> Dict[str, Any]:
     """Get the length of a geometry."""
     try:
@@ -418,7 +418,7 @@ def get_length(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error calculating length: {str(e)}")
         raise ValueError(f"Failed to calculate length: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_area(geometry: str) -> Dict[str, Any]:
     """Get the area of a geometry."""
     try:
@@ -434,7 +434,7 @@ def get_area(geometry: str) -> Dict[str, Any]:
         raise ValueError(f"Failed to calculate area: {str(e)}")
 
 # Validation operations
-@mcp.tool()
+@gis_mcp.tool()
 def is_valid(geometry: str) -> Dict[str, Any]:
     """Check if a geometry is valid."""
     try:
@@ -449,7 +449,7 @@ def is_valid(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error validating geometry: {str(e)}")
         raise ValueError(f"Failed to validate geometry: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def make_valid(geometry: str) -> Dict[str, Any]:
     """Make a geometry valid."""
     try:
@@ -465,7 +465,7 @@ def make_valid(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error making geometry valid: {str(e)}")
         raise ValueError(f"Failed to make geometry valid: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def simplify(geometry: str, tolerance: float, 
             preserve_topology: bool = True) -> Dict[str, Any]:
     """Simplify a geometry."""
@@ -483,7 +483,7 @@ def simplify(geometry: str, tolerance: float,
         raise ValueError(f"Failed to simplify geometry: {str(e)}")
 
 # Utility operations (already existed)
-@mcp.tool()
+@gis_mcp.tool()
 def snap_geometry(geometry1: str, geometry2: str, tolerance: float) -> Dict[str, Any]:
     """
     Snap one geometry to another using shapely.ops.snap.
@@ -509,7 +509,7 @@ def snap_geometry(geometry1: str, geometry2: str, tolerance: float) -> Dict[str,
         logger.error(f"Error in snap_geometry: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def nearest_point_on_geometry(geometry1: str, geometry2: str) -> Dict[str, Any]:
     """
     Find the nearest point on geometry2 to geometry1 using shapely.ops.nearest_points.
@@ -534,7 +534,7 @@ def nearest_point_on_geometry(geometry1: str, geometry2: str) -> Dict[str, Any]:
         logger.error(f"Error in nearest_point_on_geometry: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def normalize_geometry(geometry: str) -> Dict[str, Any]:
     """
     Normalize the orientation/order of a geometry using shapely.normalize.
@@ -556,7 +556,7 @@ def normalize_geometry(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error in normalize_geometry: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def geometry_to_geojson(geometry: str) -> Dict[str, Any]:
     """
     Convert a Shapely geometry (WKT) to GeoJSON using shapely.geometry.mapping.
@@ -579,7 +579,7 @@ def geometry_to_geojson(geometry: str) -> Dict[str, Any]:
         logger.error(f"Error in geometry_to_geojson: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def geojson_to_geometry(geojson: Dict[str, Any]) -> Dict[str, Any]:
     """
     Convert GeoJSON to a Shapely geometry using shapely.shape.
