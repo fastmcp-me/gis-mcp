@@ -9,6 +9,8 @@
 
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries, enabling AI assistants to perform geospatial operations and transformations.
 
+🌐 **Website:** [gis-mcp.com](https://gis-mcp.com)
+
 > Alpha
 >
 > Version 0.6.0 (Beta) is under active development. We welcome contributions and developers to join us in building this project.
@@ -33,28 +35,15 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
+  - [Installing via Smithery](#-installing-via-smithery)
   - [pip Installation](#-pip-installation)
   - [Development Installation](#-development-installation)
-- [Available Tools](#-available-tools)
-  - [Shapely Operations](#shapely-operations)
-    - [Basic Operations](#basic-operations)
-    - [Geometric Properties](#geometric-properties)
-    - [Transformations](#transformations)
-    - [Advanced Operations](#advanced-operations)
-    - [Measurements](#measurements)
-    - [Validation and Simplification](#validation-and-simplification)
-  - [PyProj Operations](#pyproj-operations)
-    - [Coordinate Transformations](#coordinate-transformations)
-    - [CRS Information](#crs-information)
-    - [Geodetic Calculations](#geodetic-calculations)
-  - [Geopandas Operations](#geopandas-operations)
-    - [I/O Operations](#i/o-operations)
-    - [Join Operations](#join-operations)
-  - [Rasterio Operations](#rasterio-operations)
-    - [Basic Raster Operations](#basic-raster-operations)
-    - [Raster Processing](#raster-processing)
-    - [Raster Analysis](#raster-analysis)
-  - [Pysal Operations](#pysal-operations)
+- [Available Functions](#-available-functions)
+  - [Shapely Functions](#-shapely-functions-29-total)
+  - [PyProj Functions](#-pyproj-functions-11-total)
+  - [GeoPandas Functions](#-geopandas-functions-11-total)
+  - [Rasterio Functions](#-rasterio-functions-18-total)
+  - [PySAL Functions](#-pysal-functions-15-total)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -65,11 +54,20 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 ## 🚀 Features
 
-- 🔍 Comprehensive geometric operations (intersection, union, buffer, etc.)
-- 🌐 Advanced coordinate transformations and projections
-- 📏 Precise distance and area calculations
-- 🗺️ Spatial analysis and validation
-- 🛠️ Easy integration with MCP-compatible clients
+GIS MCP Server empowers AI assistants with advanced geospatial intelligence. Key features include:
+
+- 🔹 **Comprehensive Geometry Operations** – Perform intersection, union, buffer, difference, and other geometric transformations with ease.
+- 🔹 **Advanced Coordinate Transformations** – Effortlessly reproject and transform geometries between coordinate reference systems.
+- 🔹 **Accurate Measurements** – Compute distances, areas, lengths, and centroids precisely.
+- 🔹 **Spatial Analysis & Validation** – Validate geometries, run proximity checks, and perform spatial overlays or joins.
+- 🔹 **Raster & Vector Support** – Process raster layers, compute indices like NDVI, clip, resample, and merge with vector data.
+- 🔹 **Spatial Statistics & Modeling** – Leverage PySAL for spatial autocorrelation, clustering, and neighborhood analysis.
+- 🔹 **Easy Integration** – Connect seamlessly with MCP-compatible clients like Claude Desktop or Cursor IDE.
+- 🔹 **Flexible & Extensible** – Supports Python-based GIS libraries and is ready for custom tools or workflow extensions.
+
+> 🌟 **Tip:** With GIS MCP Server, your AI can now “think spatially,” unlocking new capabilities for environmental analysis, mapping, and location intelligence.
+
+---
 
 ## 📋 Prerequisites
 
@@ -77,11 +75,11 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 - MCP-compatible client (like Claude Desktop or Cursor)
 - Internet connection for package installation
 
-## 🛠️ Installation
+## 🛠 Installation
 
 Choose the installation method that best suits your needs:
 
-### Installing via Smithery
+### 🛠 Installing via Smithery
 
 To install GIS MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mahdin75/gis-mcp):
 
@@ -184,7 +182,7 @@ After configuration:
 3. Restart your IDE to apply the changes
 4. You can now use all GIS operations through Claude or Cursor!
 
-### 🛠️ Development Installation
+### 🛠 Development Installation
 
 For contributors and developers:
 
@@ -279,155 +277,166 @@ After configuration:
 3. Restart your IDE to apply the changes
 4. You can now use all GIS operations through Claude or Cursor!
 
-## 🛠️ Available Tools
+## 📚 Available Functions
 
-### Shapely Operations
+This section provides a comprehensive list of all available functions organized by library.
 
-#### Basic Operations
+### 🔷 Shapely Functions (29 total)
 
-| Tool                   | Description                                                    |
-| ---------------------- | -------------------------------------------------------------- |
-| `buffer`               | Create a buffer around geometries with customizable parameters |
-| `intersection`         | Find intersection of two geometries                            |
-| `union`                | Combine two geometries                                         |
-| `difference`           | Find difference between geometries                             |
-| `symmetric_difference` | Find symmetric difference between geometries                   |
+**Basic Geometric Operations:**
 
-#### Geometric Properties
+- `buffer` - Create buffer around geometry
+- `intersection` - Find intersection of two geometries
+- `union` - Combine two geometries
+- `difference` - Find difference between geometries
+- `symmetric_difference` - Find symmetric difference
 
-| Tool                        | Description                                 |
-| --------------------------- | ------------------------------------------- |
-| `convex_hull`               | Calculate convex hull of a geometry         |
-| `envelope`                  | Get bounding box of a geometry              |
-| `minimum_rotated_rectangle` | Get minimum rotated rectangle of a geometry |
-| `get_centroid`              | Get the centroid of a geometry              |
-| `get_bounds`                | Get the bounds of a geometry                |
-| `get_coordinates`           | Get the coordinates of a geometry           |
-| `get_geometry_type`         | Get the type of a geometry                  |
+**Geometric Properties:**
 
-#### Transformations
+- `convex_hull` - Calculate convex hull
+- `envelope` - Get bounding box
+- `minimum_rotated_rectangle` - Get minimum rotated rectangle
+- `get_centroid` - Get centroid point
+- `get_bounds` - Get geometry bounds
+- `get_coordinates` - Extract coordinate array
+- `get_geometry_type` - Get geometry type name
 
-| Tool                 | Description                                       |
-| -------------------- | ------------------------------------------------- |
-| `rotate_geometry`    | Rotate a geometry with specified angle and origin |
-| `scale_geometry`     | Scale a geometry with x and y factors             |
-| `translate_geometry` | Translate a geometry with x, y, and z offsets     |
+**Transformations:**
 
-#### Advanced Operations
+- `rotate_geometry` - Rotate geometry by angle
+- `scale_geometry` - Scale geometry by factors
+- `translate_geometry` - Move geometry by offset
 
-| Tool                     | Description                           |
-| ------------------------ | ------------------------------------- |
-| `triangulate_geometry`   | Create a triangulation of a geometry  |
-| `voronoi`                | Create a Voronoi diagram from points  |
-| `unary_union_geometries` | Create a union of multiple geometries |
+**Advanced Operations:**
 
-#### Measurements
+- `triangulate_geometry` - Create triangulation
+- `voronoi` - Create Voronoi diagram
+- `unary_union_geometries` - Union multiple geometries
 
-| Tool         | Description                  |
-| ------------ | ---------------------------- |
-| `get_length` | Get the length of a geometry |
-| `get_area`   | Get the area of a geometry   |
+**Measurements:**
 
-#### Validation and Simplification
+- `get_length` - Calculate geometry length
+- `get_area` - Calculate geometry area
 
-| Tool         | Description                                  |
-| ------------ | -------------------------------------------- |
-| `is_valid`   | Check if a geometry is valid                 |
-| `make_valid` | Make a geometry valid                        |
-| `simplify`   | Simplify a geometry with specified tolerance |
+**Validation & Utilities:**
 
-### PyProj Operations
+- `is_valid` - Check geometry validity
+- `make_valid` - Fix invalid geometry
+- `simplify` - Simplify geometry
+- `snap_geometry` - Snap to reference geometry
+- `nearest_point_on_geometry` - Find nearest point
+- `normalize_geometry` - Normalize orientation
+- `geometry_to_geojson` - Convert to GeoJSON
+- `geojson_to_geometry` - Convert from GeoJSON
 
-#### Coordinate Transformations
+### 🔷 PyProj Functions (11 total)
 
-| Tool                    | Description                       |
-| ----------------------- | --------------------------------- |
-| `transform_coordinates` | Transform coordinates between CRS |
-| `project_geometry`      | Project a geometry between CRS    |
+**Coordinate Transformations:**
 
-#### CRS Information
+- `transform_coordinates` - Transform point coordinates
+- `project_geometry` - Project geometry between CRS
 
-| Tool                 | Description                              |
-| -------------------- | ---------------------------------------- |
-| `get_crs_info`       | Get detailed information about a CRS     |
-| `get_available_crs`  | Get list of all available CRS            |
-| `get_utm_zone`       | Get UTM zone for given coordinates       |
-| `get_utm_crs`        | Get UTM CRS for given coordinates        |
-| `get_geocentric_crs` | Get geocentric CRS for given coordinates |
+**CRS Information:**
 
-#### Geodetic Calculations
+- `get_crs_info` - Get detailed CRS information
+- `get_available_crs` - List available CRS systems
+- `get_utm_zone` - Get UTM zone for coordinates
+- `get_utm_crs` - Get UTM CRS for coordinates
+- `get_geocentric_crs` - Get geocentric CRS
 
-| Tool                          | Description                                             |
-| ----------------------------- | ------------------------------------------------------- |
-| `get_geod_info`               | Get information about a geodetic calculation            |
-| `calculate_geodetic_distance` | Calculate geodetic distance between points              |
-| `calculate_geodetic_point`    | Calculate point at given distance and azimuth           |
-| `calculate_geodetic_area`     | Calculate area of a polygon using geodetic calculations |
+**Geodetic Calculations:**
 
-### GeoPandas Operations
+- `get_geod_info` - Get ellipsoid information
+- `calculate_geodetic_distance` - Calculate distance on ellipsoid
+- `calculate_geodetic_point` - Calculate point at distance/azimuth
+- `calculate_geodetic_area` - Calculate area on ellipsoid
 
-#### I/O Operations
+### 🔷 GeoPandas Functions (11 total)
 
-| Tool            | Description                                              |
-| --------------- | -------------------------------------------------------- |
-| `read_file_gpd` | Read a geospatial file and return stats and data preview |
-| `to_file_gpd`   | Write a GeoDataFrame to a file                           |
+**I/O Operations:**
 
-#### Join Operations
+- `read_file_gpd` - Read geospatial file with preview
+- `write_file_gpd` - Export GeoDataFrame to file
 
-| Tool         | Description                                        |
-| ------------ | -------------------------------------------------- |
-| `append_gpd` | Concatenate two GeoDataFrames vertically           |
-| `merge_gpd`  | Perform database-style joins between GeoDataFrames |
+**Join & Merge Operations:**
 
-### Rasterio Operations
+- `append_gpd` - Concatenate GeoDataFrames vertically
+- `merge_gpd` - Database-style attribute joins
+- `overlay_gpd` - Spatial overlay operations
+- `dissolve_gpd` - Dissolve by attribute
+- `explode_gpd` - Split multi-part geometries
 
-#### Basic Raster Operations
+**Spatial Operations:**
 
-| Tool                     | Description                                              |
-| ------------------------ | -------------------------------------------------------- |
-| `metadata_raster`        | Get metadata from a raster dataset                       |
-| `get_raster_crs`         | Retrieve the CRS of a raster dataset                     |
-| `extract_band`           | Extract a specific band from a multi-band raster         |
-| `raster_band_statistics` | Calculate statistics (min, max, mean, std) for each band |
-| `raster_histogram`       | Compute histogram of pixel values for each band          |
+- `clip_vector` - Clip geometries
+- `sjoin_gpd` - Spatial joins
+- `sjoin_nearest_gpd` - Nearest neighbor spatial joins
+- `point_in_polygon` - Point-in-polygon tests
 
-#### Raster Processing
+### 🔷 Rasterio Functions (18 total)
 
-| Tool                         | Description                                   |
-| ---------------------------- | --------------------------------------------- |
-| `clip_raster_with_shapefile` | Clip a raster using polygons from a shapefile |
-| `resample_raster`            | Resample a raster by a scale factor           |
-| `reproject_raster`           | Reproject a raster to a new CRS               |
-| `tile_raster`                | Split a raster into square tiles              |
+**Basic Raster Operations:**
 
-#### Raster Analysis
+- `metadata_raster` - Get raster metadata
+- `get_raster_crs` - Get raster CRS
+- `extract_band` - Extract single band
+- `raster_band_statistics` - Calculate band statistics
+- `raster_histogram` - Compute pixel histograms
 
-| Tool                | Description                                                     |
-| ------------------- | --------------------------------------------------------------- |
-| `compute_ndvi`      | Calculate Normalized Difference Vegetation Index                |
-| `raster_algebra`    | Perform algebraic operations on raster bands                    |
-| `concat_bands`      | Combine multiple single-band rasters into one multi-band raster |
-| `weighted_band_sum` | Compute weighted sum of all bands in a raster                   |
+**Raster Processing:**
 
-### Pysal Operations
+- `clip_raster_with_shapefile` - Clip raster with polygons
+- `resample_raster` - Resample by scale factor
+- `reproject_raster` - Reproject to new CRS
+- `tile_raster` - Split into tiles
 
-#### ESDA
+**Raster Analysis:**
 
-Currently, the following functions from esda package are supported.
-| Tool | Description |
-| ----------------- | ----------- |
-| `getis_ord_g` | Computes the Global Getis-Ord G statistic to detect spatial clustering of high or low values. |
-| `morans_i` | Computes the Global Moran’s I statistic to measure overall spatial autocorrelation. |
-| `gearys_c` | Calculates Global Geary’s C for spatial autocorrelation and local dissimilarity. |
-| `gamma_statistic` | Computes the Gamma index for spatial autocorrelation patterns. |
-| `moran_local` | Calculates Local Moran’s I for identifying local spatial clusters and outliers. |
-| `getis_ord_g_local` | Computes Local Getis-Ord G\* for detecting local hotspots and coldspots. |
-| `join_counts` | Performs Binary Join Counts test for spatial autocorrelation in categorical (binary) data. |
-| `join_counts_local` | Calculates Local Join Counts to detect clusters in binary spatial data. |
-| `adbscan` | Runs Adaptive Density-Based Spatial Clustering (A-DBSCAN) for spatial clustering based on coordinates. |
+- `compute_ndvi` - Calculate vegetation index
+- `raster_algebra` - Mathematical operations on bands
+- `concat_bands` - Combine single-band rasters
+- `weighted_band_sum` - Weighted band combination
 
-## 🛠️ Client Development
+**Advanced Analysis:**
+
+- `zonal_statistics` - Statistics within polygons
+- `reclassify_raster` - Reclassify pixel values
+- `focal_statistics` - Moving window statistics
+- `hillshade` - Generate hillshade from DEM
+- `write_raster` - Write array to raster file
+
+### 🔷 PySAL Functions (15 total)
+
+**Spatial Autocorrelation:**
+
+- `morans_i` - Global Moran's I statistic
+- `gearys_c` - Global Geary's C statistic
+- `gamma_statistic` - Gamma index
+- `getis_ord_g` - Global Getis-Ord G statistic
+
+**Local Statistics:**
+
+- `moran_local` - Local Moran's I
+- `getis_ord_g_local` - Local Getis-Ord G\*
+- `join_counts_local` - Local join counts
+
+**Global Statistics:**
+
+- `join_counts` - Binary join counts test
+- `adbscan` - Adaptive density-based clustering
+
+**Spatial Weights:**
+
+- `weights_from_shapefile` - Create weights from shapefile
+- `distance_band_weights` - Distance-based weights
+- `knn_weights` - K-nearest neighbors weights
+- `build_transform_and_save_weights` - Build, transform, and save weights
+- `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
+- `build_and_transform_weights` - Build and transform weights
+
+**Total Functions Available: 84**
+
+## 🛠 Client Development
 
 Example usage of the tools:
 
@@ -510,7 +519,7 @@ Join our Discord community for discussions, updates, and support:
 
 [![Join our Discord](https://img.shields.io/badge/Discord-Join%20our%20community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dzkXZsZK)
 
-## 👥 Contributors
+## 👥 Contributors {#-contributors}
 
 <a href="https://github.com/mahdin75/gis-mcp/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=mahdin75/gis-mcp" />
