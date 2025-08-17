@@ -519,7 +519,7 @@ Join our Discord community for discussions, updates, and support:
 
 [![Join our Discord](https://img.shields.io/badge/Discord-Join%20our%20community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dzkXZsZK)
 
-## 👥 Contributors {#-contributors}
+## 👥 Contributors
 
 <a href="https://github.com/mahdin75/gis-mcp/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=mahdin75/gis-mcp" />
