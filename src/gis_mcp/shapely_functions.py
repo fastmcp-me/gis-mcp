@@ -2,7 +2,7 @@
 import os
 import logging
 from typing import Any, Dict, List, Optional
-from mcp import gis_mcp
+from .mcp import gis_mcp
 
 # Configure logging
 logger = logging.getLogger(__name__)
