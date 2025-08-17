@@ -7,6 +7,8 @@
   <img src="docs/gis-mcp.png" alt="GIS MCP Server Logo" width="300"/>
 </div>
 
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mahdin75/gis-mcp)](https://archestra.ai/mcp-catalog/mahdin75__gis-mcp)
+
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries, enabling AI assistants to perform geospatial operations and transformations.
 
 > Alpha
