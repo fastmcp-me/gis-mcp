@@ -151,7 +151,12 @@ def get_geopandas_io() -> Dict[str, List[str]]:
     return {
         "operations": [
             "read_file_gpd",
-            "to_file_gpd"
+            "to_file_gpd",
+            "overlay_gpd",
+            "dissolve_gpd",
+            "explode_gpd",
+            "clip_vector",
+            "write_file_gpd"
         ]
     }
 
@@ -161,7 +166,12 @@ def get_geopandas_joins() -> Dict[str, List[str]]:
     return {
         "operations": [
             "append_gpd",
-            "merge_gpd"]}
+            "merge_gpd",
+            "sjoin_gpd",
+            "sjoin_nearest_gpd",
+            "point_in_polygon"
+        ]
+    }
 
 @mcp.resource("gis://operation/rasterio")
 def get_rasterio_operations() -> Dict[str, List[str]]:
@@ -181,6 +191,11 @@ def get_rasterio_operations() -> Dict[str, List[str]]:
             "tile_raster",
             "raster_band_statistics",
             "extract_band",
+            "zonal_statistics",
+            "reclassify_raster",
+            "focal_statistics",
+            "hillshade",
+            "write_raster"
         ]
     }
 
@@ -198,6 +213,19 @@ def get_spatial_operations() -> Dict[str, List[str]]:
             "join_counts",
             "join_counts_local",
             "adbscan"
+        ]
+    }
+
+@mcp.resource("gis://operations/shapely_util")
+def get_shapely_util_operations() -> Dict[str, List[str]]:
+    """List available Shapely utility/advanced operations."""
+    return {
+        "operations": [
+            "snap_geometry",
+            "nearest_point_on_geometry",
+            "normalize_geometry",
+            "geometry_to_geojson",
+            "geojson_to_geometry"
         ]
     }
 
@@ -967,7 +995,264 @@ def merge_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> D
         logger.error(f"Error merging shapefiles: {str(e)}")
         raise ValueError(f"Failed to merge shapefiles: {str(e)}")
 
+@mcp.tool()
+def overlay_gpd(gdf1_path: str, gdf2_path: str, how: str = "intersection", output_path: str = None) -> Dict[str, Any]:
+    """
+    Overlay two GeoDataFrames using geopandas.overlay.
+    Args:
+        gdf1_path: Path to the first geospatial file.
+        gdf2_path: Path to the second geospatial file.
+        how: Overlay method ('intersection', 'union', 'identity', 'symmetric_difference', 'difference').
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        gdf1 = gpd.read_file(gdf1_path)
+        gdf2 = gpd.read_file(gdf2_path)
+        if gdf1.crs != gdf2.crs:
+            gdf2 = gdf2.to_crs(gdf1.crs)
+        result = gpd.overlay(gdf1, gdf2, how=how)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": f"Overlay ({how}) completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in overlay_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
+@mcp.tool()
+def dissolve_gpd(gdf_path: str, by: str = None, output_path: str = None) -> Dict[str, Any]:
+    """
+    Dissolve geometries by attribute using geopandas.dissolve.
+    Args:
+        gdf_path: Path to the geospatial file.
+        by: Column to dissolve by (optional).
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        gdf = gpd.read_file(gdf_path)
+        result = gdf.dissolve(by=by)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": f"Dissolve completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in dissolve_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def explode_gpd(gdf_path: str, output_path: str = None) -> Dict[str, Any]:
+    """
+    Split multi-part geometries into single parts using geopandas.explode.
+    Args:
+        gdf_path: Path to the geospatial file.
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        gdf = gpd.read_file(gdf_path)
+        result = gdf.explode(index_parts=True, ignore_index=True)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": "Explode completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in explode_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def clip_vector(gdf_path: str, clip_path: str, output_path: str = None) -> Dict[str, Any]:
+    """
+    Clip vector geometries using geopandas.clip.
+    Args:
+        gdf_path: Path to the input geospatial file.
+        clip_path: Path to the clipping geometry file.
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        gdf = gpd.read_file(gdf_path)
+        clip_gdf = gpd.read_file(clip_path)
+        if gdf.crs != clip_gdf.crs:
+            clip_gdf = clip_gdf.to_crs(gdf.crs)
+        result = gpd.clip(gdf, clip_gdf)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": "Clip completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in clip_vector: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def sjoin_gpd(left_path: str, right_path: str, how: str = "inner", predicate: str = "intersects", output_path: str = None) -> Dict[str, Any]:
+    """
+    Spatial join between two GeoDataFrames using geopandas.sjoin.
+    Args:
+        left_path: Path to the left geospatial file.
+        right_path: Path to the right geospatial file.
+        how: Type of join ('left', 'right', 'inner').
+        predicate: Spatial predicate ('intersects', 'within', 'contains', etc.).
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        left = gpd.read_file(left_path)
+        right = gpd.read_file(right_path)
+        if left.crs != right.crs:
+            right = right.to_crs(left.crs)
+        result = gpd.sjoin(left, right, how=how, predicate=predicate)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": f"Spatial join ({how}, {predicate}) completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in sjoin_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def sjoin_nearest_gpd(left_path: str, right_path: str, how: str = "left", max_distance: float = None, output_path: str = None) -> Dict[str, Any]:
+    """
+    Nearest neighbor spatial join using geopandas.sjoin_nearest.
+    Args:
+        left_path: Path to the left geospatial file.
+        right_path: Path to the right geospatial file.
+        how: Type of join ('left', 'right').
+        max_distance: Optional maximum search distance.
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        left = gpd.read_file(left_path)
+        right = gpd.read_file(right_path)
+        if left.crs != right.crs:
+            right = right.to_crs(left.crs)
+        kwargs = {"how": how}
+        if max_distance is not None:
+            kwargs["max_distance"] = max_distance
+        result = gpd.sjoin_nearest(left, right, **kwargs)
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": f"Nearest spatial join ({how}) completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in sjoin_nearest_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def point_in_polygon(points_path: str, polygons_path: str, output_path: str = None) -> Dict[str, Any]:
+    """
+    Check if points are inside polygons using spatial join (predicate='within').
+    Args:
+        points_path: Path to the point geospatial file.
+        polygons_path: Path to the polygon geospatial file.
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output info.
+    """
+    try:
+        points = gpd.read_file(points_path)
+        polygons = gpd.read_file(polygons_path)
+        if points.crs != polygons.crs:
+            polygons = polygons.to_crs(points.crs)
+        result = gpd.sjoin(points, polygons, how="left", predicate="within")
+        if output_path:
+            result.to_file(output_path)
+        preview = result.head(5).to_dict(orient="records")
+        return {
+            "status": "success",
+            "message": "Point-in-polygon test completed successfully.",
+            "num_features": len(result),
+            "crs": str(result.crs),
+            "columns": list(result.columns),
+            "preview": preview,
+            "output_path": output_path,
+        }
+    except Exception as e:
+        logger.error(f"Error in point_in_polygon: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def write_file_gpd(gdf_path: str, output_path: str, driver: str = None) -> Dict[str, Any]:
+    """
+    Export a GeoDataFrame to a file (Shapefile, GeoJSON, GPKG, etc.).
+    Args:
+        gdf_path: Path to the input geospatial file.
+        output_path: Path to save the exported file.
+        driver: Optional OGR driver name (e.g., 'ESRI Shapefile', 'GeoJSON', 'GPKG').
+    Returns:
+        Dictionary with status and message.
+    """
+    try:
+        gdf = gpd.read_file(gdf_path)
+        kwargs = {"driver": driver} if driver else {}
+        gdf.to_file(output_path, **kwargs)
+        return {
+            "status": "success",
+            "message": f"GeoDataFrame exported to '{output_path}' successfully.",
+            "output_path": output_path,
+            "crs": str(gdf.crs),
+            "num_features": len(gdf),
+            "columns": list(gdf.columns),
+        }
+    except Exception as e:
+        logger.error(f"Error in write_file_gpd: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
 @mcp.tool()
 def metadata_raster(path_or_url: str) -> Dict[str, Any]:
@@ -2567,10 +2852,320 @@ def ols_with_spatial_diagnostics_safe(
         logger.error(f"Error in ols_with_spatial_diagnostics_safe: {str(e)}")
         return {"status": "error", "message": f"Failed to run OLS regression: {str(e)}"}
 
+@mcp.tool()
+def snap_geometry(geometry1: str, geometry2: str, tolerance: float) -> Dict[str, Any]:
+    """
+    Snap one geometry to another using shapely.ops.snap.
+    Args:
+        geometry1: WKT string of the geometry to be snapped.
+        geometry2: WKT string of the reference geometry.
+        tolerance: Distance tolerance for snapping.
+    Returns:
+        Dictionary with status, message, and snapped geometry as WKT.
+    """
+    try:
+        from shapely import wkt
+        from shapely.ops import snap
+        geom1 = wkt.loads(geometry1)
+        geom2 = wkt.loads(geometry2)
+        snapped = snap(geom1, geom2, tolerance)
+        return {
+            "status": "success",
+            "geometry": snapped.wkt,
+            "message": "Geometry snapped successfully"
+        }
+    except Exception as e:
+        logger.error(f"Error in snap_geometry: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
+@mcp.tool()
+def nearest_point_on_geometry(geometry1: str, geometry2: str) -> Dict[str, Any]:
+    """
+    Find the nearest point on geometry2 to geometry1 using shapely.ops.nearest_points.
+    Args:
+        geometry1: WKT string of the first geometry (e.g., a point).
+        geometry2: WKT string of the second geometry.
+    Returns:
+        Dictionary with status, message, and the nearest point as WKT.
+    """
+    try:
+        from shapely import wkt
+        from shapely.ops import nearest_points
+        geom1 = wkt.loads(geometry1)
+        geom2 = wkt.loads(geometry2)
+        p1, p2 = nearest_points(geom1, geom2)
+        return {
+            "status": "success",
+            "nearest_point": p2.wkt,
+            "message": "Nearest point found successfully"
+        }
+    except Exception as e:
+        logger.error(f"Error in nearest_point_on_geometry: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
+@mcp.tool()
+def normalize_geometry(geometry: str) -> Dict[str, Any]:
+    """
+    Normalize the orientation/order of a geometry using shapely.normalize.
+    Args:
+        geometry: WKT string of the geometry.
+    Returns:
+        Dictionary with status, message, and normalized geometry as WKT.
+    """
+    try:
+        from shapely import wkt, normalize
+        geom = wkt.loads(geometry)
+        normalized = normalize(geom)
+        return {
+            "status": "success",
+            "geometry": normalized.wkt,
+            "message": "Geometry normalized successfully"
+        }
+    except Exception as e:
+        logger.error(f"Error in normalize_geometry: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
+@mcp.tool()
+def geometry_to_geojson(geometry: str) -> Dict[str, Any]:
+    """
+    Convert a Shapely geometry (WKT) to GeoJSON using shapely.geometry.mapping.
+    Args:
+        geometry: WKT string of the geometry.
+    Returns:
+        Dictionary with status, message, and GeoJSON dict.
+    """
+    try:
+        from shapely import wkt
+        from shapely.geometry import mapping
+        geom = wkt.loads(geometry)
+        geojson = mapping(geom)
+        return {
+            "status": "success",
+            "geojson": geojson,
+            "message": "Geometry converted to GeoJSON successfully"
+        }
+    except Exception as e:
+        logger.error(f"Error in geometry_to_geojson: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
+@mcp.tool()
+def geojson_to_geometry(geojson: dict) -> Dict[str, Any]:
+    """
+    Convert a GeoJSON dict to a Shapely geometry (WKT) using shapely.shape.
+    Args:
+        geojson: GeoJSON dictionary.
+    Returns:
+        Dictionary with status, message, and geometry as WKT.
+    """
+    try:
+        from shapely.geometry import shape
+        geom = shape(geojson)
+        return {
+            "status": "success",
+            "geometry": geom.wkt,
+            "message": "GeoJSON converted to geometry successfully"
+        }
+    except Exception as e:
+        logger.error(f"Error in geojson_to_geometry: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def zonal_statistics(raster_path: str, vector_path: str, stats: list = None) -> Dict[str, Any]:
+    """
+    Calculate statistics of raster values within polygons (zonal statistics).
+    Args:
+        raster_path: Path to the raster file.
+        vector_path: Path to the vector file (polygons).
+        stats: List of statistics to compute (e.g., ["mean", "min", "max", "std"]).
+    Returns:
+        Dictionary with status, message, and statistics per polygon.
+    """
+    try:
+        import rasterio
+        import rasterio.mask
+        import geopandas as gpd
+        import numpy as np
+        if stats is None:
+            stats = ["mean", "min", "max", "std"]
+        gdf = gpd.read_file(vector_path)
+        with rasterio.open(raster_path) as src:
+            results = []
+            for idx, row in gdf.iterrows():
+                geom = [row["geometry"]]
+                out_image, out_transform = rasterio.mask.mask(src, geom, crop=True, filled=True)
+                data = out_image[0]
+                data = data[data != src.nodata] if src.nodata is not None else data
+                stat_result = {"index": idx}
+                if data.size == 0:
+                    for s in stats:
+                        stat_result[s] = None
+                else:
+                    if "mean" in stats:
+                        stat_result["mean"] = float(np.mean(data))
+                    if "min" in stats:
+                        stat_result["min"] = float(np.min(data))
+                    if "max" in stats:
+                        stat_result["max"] = float(np.max(data))
+                    if "std" in stats:
+                        stat_result["std"] = float(np.std(data))
+                results.append(stat_result)
+        return {
+            "status": "success",
+            "message": "Zonal statistics computed successfully.",
+            "results": results
+        }
+    except Exception as e:
+        logger.error(f"Error in zonal_statistics: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def reclassify_raster(raster_path: str, reclass_map: dict, output_path: str) -> Dict[str, Any]:
+    """
+    Reclassify raster values using a mapping dictionary.
+    Args:
+        raster_path: Path to the input raster.
+        reclass_map: Dictionary mapping old values to new values (e.g., {1: 10, 2: 20}).
+        output_path: Path to save the reclassified raster.
+    Returns:
+        Dictionary with status and message.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        with rasterio.open(raster_path) as src:
+            data = src.read(1)
+            profile = src.profile.copy()
+            reclass_data = np.copy(data)
+            for old, new in reclass_map.items():
+                reclass_data[data == old] = new
+        with rasterio.open(output_path, "w", **profile) as dst:
+            dst.write(reclass_data, 1)
+        return {
+            "status": "success",
+            "message": f"Raster reclassified and saved to '{output_path}'.",
+            "output_path": output_path
+        }
+    except Exception as e:
+        logger.error(f"Error in reclassify_raster: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def focal_statistics(raster_path: str, statistic: str, size: int = 3, output_path: str = None) -> Dict[str, Any]:
+    """
+    Compute focal (moving window) statistics on a raster.
+    Args:
+        raster_path: Path to the input raster.
+        statistic: Statistic to compute ('mean', 'min', 'max', 'std').
+        size: Window size (odd integer).
+        output_path: Optional path to save the result.
+    Returns:
+        Dictionary with status, message, and output path if saved.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        from scipy.ndimage import generic_filter
+        with rasterio.open(raster_path) as src:
+            data = src.read(1)
+            profile = src.profile.copy()
+            func = None
+            if statistic == "mean":
+                func = np.mean
+            elif statistic == "min":
+                func = np.min
+            elif statistic == "max":
+                func = np.max
+            elif statistic == "std":
+                func = np.std
+            else:
+                raise ValueError(f"Unsupported statistic: {statistic}")
+            filtered = generic_filter(data, func, size=size, mode='nearest')
+        if output_path:
+            with rasterio.open(output_path, "w", **profile) as dst:
+                dst.write(filtered, 1)
+        return {
+            "status": "success",
+            "message": f"Focal {statistic} computed successfully.",
+            "output_path": output_path
+        }
+    except Exception as e:
+        logger.error(f"Error in focal_statistics: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def hillshade(raster_path: str, azimuth: float = 315, angle_altitude: float = 45, output_path: str = None) -> Dict[str, Any]:
+    """
+    Generate hillshade from a DEM raster.
+    Args:
+        raster_path: Path to the DEM raster.
+        azimuth: Sun azimuth angle in degrees.
+        angle_altitude: Sun altitude angle in degrees.
+        output_path: Optional path to save the hillshade raster.
+    Returns:
+        Dictionary with status, message, and output path if saved.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        with rasterio.open(raster_path) as src:
+            elevation = src.read(1).astype('float32')
+            profile = src.profile.copy()
+            x, y = np.gradient(elevation, src.res[0], src.res[1])
+            slope = np.pi/2 - np.arctan(np.sqrt(x*x + y*y))
+            aspect = np.arctan2(-x, y)
+            az = np.deg2rad(azimuth)
+            alt = np.deg2rad(angle_altitude)
+            shaded = np.sin(alt) * np.sin(slope) + np.cos(alt) * np.cos(slope) * np.cos(az - aspect)
+            hillshade = np.clip(255 * shaded, 0, 255).astype('uint8')
+        if output_path:
+            profile.update(dtype='uint8', count=1)
+            with rasterio.open(output_path, "w", **profile) as dst:
+                dst.write(hillshade, 1)
+        return {
+            "status": "success",
+            "message": "Hillshade generated successfully.",
+            "output_path": output_path
+        }
+    except Exception as e:
+        logger.error(f"Error in hillshade: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+@mcp.tool()
+def write_raster(array: list, reference_raster: str, output_path: str, dtype: str = None) -> Dict[str, Any]:
+    """
+    Write a numpy array to a raster file using metadata from a reference raster.
+    Args:
+        array: 2D or 3D list (or numpy array) of raster values.
+        reference_raster: Path to a raster whose metadata will be copied.
+        output_path: Path to save the new raster.
+        dtype: Optional data type (e.g., 'float32', 'uint8').
+    Returns:
+        Dictionary with status and message.
+    """
+    try:
+        import rasterio
+        import numpy as np
+        arr = np.array(array)
+        with rasterio.open(reference_raster) as src:
+            profile = src.profile.copy()
+            if dtype:
+                profile.update(dtype=dtype)
+            if arr.ndim == 2:
+                profile.update(count=1)
+            elif arr.ndim == 3:
+                profile.update(count=arr.shape[0])
+            else:
+                raise ValueError("Array must be 2D or 3D.")
+        with rasterio.open(output_path, "w", **profile) as dst:
+            dst.write(arr)
+        return {
+            "status": "success",
+            "message": f"Raster written to '{output_path}' successfully.",
+            "output_path": output_path
+        }
+    except Exception as e:
+        logger.error(f"Error in write_raster: {str(e)}")
+        return {"status": "error", "message": str(e)}
 
 def main():
     """Main entry point for the GIS MCP server."""

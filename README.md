@@ -11,7 +11,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 > Alpha
 >
-> Version 0.5.0 (Alpha) is under active development. We welcome contributions and developers to join us in building this project.
+> Version 0.6.0 (Beta) is under active development. We welcome contributions and developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -469,12 +469,11 @@ Parameters: {
 
 ## 🔮 Planned Features
 
-- Add support for more GIS libraries - GDAL/OGR
 - Implement advanced spatial indexing
-- Add support for raster operations
 - Implement network analysis capabilities
 - Add support for 3D geometries
 - Implement performance optimizations
+- Add support for more GIS libraries
 
 ## 🤝 Contributing
 
