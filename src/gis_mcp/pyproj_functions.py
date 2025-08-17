@@ -1,12 +1,12 @@
 """PyProj-related MCP tool functions and resource listings."""
 import logging
 from typing import Any, Dict, List, Optional
-from mcp.server.fastmcp import mcp
+from .mcp import gis_mcp
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-@mcp.resource("gis://crs/transformations")
+@gis_mcp.resource("gis://crs/transformations")
 def get_crs_transformations() -> Dict[str, List[str]]:
     """List available CRS transformation operations."""
     return {
@@ -16,7 +16,7 @@ def get_crs_transformations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://crs/info")
+@gis_mcp.resource("gis://crs/info")
 def get_crs_info_operations() -> Dict[str, List[str]]:
     """List available CRS information operations."""
     return {
@@ -29,7 +29,7 @@ def get_crs_info_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://crs/geodetic")
+@gis_mcp.resource("gis://crs/geodetic")
 def get_geodetic_operations() -> Dict[str, List[str]]:
     """List available geodetic operations."""
     return {
@@ -41,7 +41,7 @@ def get_geodetic_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.tool()
+@gis_mcp.tool()
 def transform_coordinates(coordinates: List[float], source_crs: str, 
                         target_crs: str) -> Dict[str, Any]:
     """Transform coordinates between CRS."""
@@ -61,7 +61,7 @@ def transform_coordinates(coordinates: List[float], source_crs: str,
         logger.error(f"Error transforming coordinates: {str(e)}")
         raise ValueError(f"Failed to transform coordinates: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def project_geometry(geometry: str, source_crs: str, 
                     target_crs: str) -> Dict[str, Any]:
     """Project a geometry between CRS."""
@@ -83,7 +83,7 @@ def project_geometry(geometry: str, source_crs: str,
         logger.error(f"Error projecting geometry: {str(e)}")
         raise ValueError(f"Failed to project geometry: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_crs_info(crs: str) -> Dict[str, Any]:
     """Get information about a CRS."""
     try:
@@ -106,7 +106,7 @@ def get_crs_info(crs: str) -> Dict[str, Any]:
         logger.error(f"Error getting CRS info: {str(e)}")
         raise ValueError(f"Failed to get CRS info: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_available_crs() -> Dict[str, Any]:
     """Get list of available CRS."""
     try:
@@ -132,7 +132,7 @@ def get_available_crs() -> Dict[str, Any]:
         logger.error(f"Error getting available CRS: {str(e)}")
         raise ValueError(f"Failed to get available CRS: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_geod_info(ellps: str = "WGS84", a: Optional[float] = None,
                 b: Optional[float] = None, f: Optional[float] = None) -> Dict[str, Any]:
     """Get information about a geodetic calculation."""
@@ -153,7 +153,7 @@ def get_geod_info(ellps: str = "WGS84", a: Optional[float] = None,
         logger.error(f"Error getting geodetic info: {str(e)}")
         raise ValueError(f"Failed to get geodetic info: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def calculate_geodetic_distance(point1: List[float], point2: List[float], 
                             ellps: str = "WGS84") -> Dict[str, Any]:
     """Calculate geodetic distance between points."""
@@ -175,7 +175,7 @@ def calculate_geodetic_distance(point1: List[float], point2: List[float],
         logger.error(f"Error calculating geodetic distance: {str(e)}")
         raise ValueError(f"Failed to calculate geodetic distance: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def calculate_geodetic_point(start_point: List[float], azimuth: float, 
                         distance: float, ellps: str = "WGS84") -> Dict[str, Any]:
     """Calculate point at given distance and azimuth."""
@@ -195,7 +195,7 @@ def calculate_geodetic_point(start_point: List[float], azimuth: float,
         logger.error(f"Error calculating geodetic point: {str(e)}")
         raise ValueError(f"Failed to calculate geodetic point: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def calculate_geodetic_area(geometry: str, ellps: str = "WGS84") -> Dict[str, Any]:
     """Calculate area of a polygon using geodetic calculations."""
     try:
@@ -214,7 +214,7 @@ def calculate_geodetic_area(geometry: str, ellps: str = "WGS84") -> Dict[str, An
         logger.error(f"Error calculating geodetic area: {str(e)}")
         raise ValueError(f"Failed to calculate geodetic area: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_utm_zone(coordinates: List[float]) -> Dict[str, Any]:
     """Get UTM zone for given coordinates."""
     try:
@@ -238,7 +238,7 @@ def get_utm_zone(coordinates: List[float]) -> Dict[str, Any]:
         logger.error(f"Error getting UTM zone: {str(e)}")
         raise ValueError(f"Failed to get UTM zone: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_utm_crs(coordinates: List[float]) -> Dict[str, Any]:
     """Get UTM CRS for given coordinates."""
     try:
@@ -262,7 +262,7 @@ def get_utm_crs(coordinates: List[float]) -> Dict[str, Any]:
         logger.error(f"Error getting UTM CRS: {str(e)}")
         raise ValueError(f"Failed to get UTM CRS: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_geocentric_crs(coordinates: List[float]) -> Dict[str, Any]:
     """Get geocentric CRS for given coordinates."""
     try:

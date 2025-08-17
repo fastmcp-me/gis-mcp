@@ -2,12 +2,12 @@
 import os
 import logging
 from typing import Any, Dict, List, Optional
-from mcp.server.fastmcp import mcp
+from .mcp import gis_mcp
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-@mcp.resource("gis://operation/rasterio")
+@gis_mcp.resource("gis://operation/rasterio")
 def get_rasterio_operations() -> Dict[str, List[str]]:
     """List available rasterio operations."""
     return {
@@ -33,7 +33,7 @@ def get_rasterio_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.tool()
+@gis_mcp.tool()
 def zonal_statistics(raster_path: str, vector_path: str, stats: list = None) -> Dict[str, Any]:
     """
     Calculate statistics of raster values within polygons (zonal statistics).
@@ -82,7 +82,7 @@ def zonal_statistics(raster_path: str, vector_path: str, stats: list = None) -> 
         logger.error(f"Error in zonal_statistics: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def reclassify_raster(raster_path: str, reclass_map: dict, output_path: str) -> Dict[str, Any]:
     """
     Reclassify raster values using a mapping dictionary.
@@ -113,7 +113,7 @@ def reclassify_raster(raster_path: str, reclass_map: dict, output_path: str) -> 
         logger.error(f"Error in reclassify_raster: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def focal_statistics(raster_path: str, statistic: str, size: int = 3, output_path: str = None) -> Dict[str, Any]:
     """
     Compute focal (moving window) statistics on a raster.
@@ -156,7 +156,7 @@ def focal_statistics(raster_path: str, statistic: str, size: int = 3, output_pat
         logger.error(f"Error in focal_statistics: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def hillshade(raster_path: str, azimuth: float = 315, angle_altitude: float = 45, output_path: str = None) -> Dict[str, Any]:
     """
     Generate hillshade from a DEM raster.
@@ -194,7 +194,7 @@ def hillshade(raster_path: str, azimuth: float = 315, angle_altitude: float = 45
         logger.error(f"Error in hillshade: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def write_raster(array: list, reference_raster: str, output_path: str, dtype: str = None) -> Dict[str, Any]:
     """
     Write a numpy array to a raster file using metadata from a reference raster.
@@ -233,7 +233,7 @@ def write_raster(array: list, reference_raster: str, output_path: str, dtype: st
 
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def metadata_raster(path_or_url: str) -> Dict[str, Any]:
     """
     Open a raster dataset in read-only mode and return metadata.
@@ -298,7 +298,7 @@ def metadata_raster(path_or_url: str) -> Dict[str, Any]:
         logger.error(f"Error opening raster '{path_or_url}': {str(e)}")
         raise ValueError(f"Failed to open raster '{path_or_url}': {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
     """
     Retrieve the Coordinate Reference System (CRS) of a raster dataset.
@@ -345,7 +345,7 @@ def get_raster_crs(path_or_url: str) -> Dict[str, Any]:
         logger.error(f"Error retrieving CRS for '{path_or_url}': {e}")
         raise ValueError(f"Failed to retrieve CRS: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def clip_raster_with_shapefile(
     raster_path_or_url: str,
     shapefile_path: str,
@@ -429,7 +429,7 @@ def clip_raster_with_shapefile(
         print(f"Error: {e}")
         raise ValueError(f"Failed to mask raster: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def resample_raster(
     source: str,
     scale_factor: float,
@@ -523,7 +523,7 @@ def resample_raster(
         logger.error(f"Error resampling raster '{source}': {e}")
         raise ValueError(f"Failed to resample raster: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def reproject_raster(
     source: str,
     target_crs: str,
@@ -602,7 +602,7 @@ def reproject_raster(
         logger.error(f"Error reprojecting raster '{source}' to '{target_crs}': {e}")
         raise ValueError(f"Failed to reproject raster: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def extract_band(
     source: str,
     band_index: int,
@@ -646,7 +646,7 @@ def extract_band(
     except Exception as e:
         raise ValueError(f"Failed to extract band: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def raster_band_statistics(
     source: str
 ) -> Dict[str, Any]:
@@ -682,7 +682,7 @@ def raster_band_statistics(
     except Exception as e:
         raise ValueError(f"Failed to compute statistics: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def tile_raster(
     source: str,
     tile_size: int,
@@ -737,7 +737,7 @@ def tile_raster(
     except Exception as e:
         raise ValueError(f"Failed to tile raster: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def raster_histogram(
     source: str,
     bins: int = 256
@@ -775,7 +775,7 @@ def raster_histogram(
     except Exception as e:
         raise ValueError(f"Failed to compute histogram: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def compute_ndvi(
     source: str,
     red_band_index: int,
@@ -820,7 +820,7 @@ def compute_ndvi(
     except Exception as e:
         raise ValueError(f"Failed to compute NDVI: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def raster_algebra(
     raster1: str,
     raster2: str,
@@ -902,7 +902,7 @@ def raster_algebra(
     except Exception as e:
         raise ValueError(f"Failed to perform raster operation: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def concat_bands(
     folder_path: str,
     destination: str
@@ -979,7 +979,7 @@ def concat_bands(
     except Exception as e:
         raise ValueError(f"Failed to concatenate rasters: {e}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def weighted_band_sum(
     source: str,
     weights: List[float],

@@ -10,12 +10,10 @@ import logging
 import argparse
 import sys
 from typing import Any, Dict, List, Optional, Union
+from .mcp import gis_mcp
 
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output
-
-# MCP imports using the new SDK patterns
-from mcp.server.fastmcp import FastMCP
 
 # Import library-specific functions
 from .geopandas_functions import (
@@ -61,7 +59,6 @@ logging.basicConfig(
 logger = logging.getLogger("gis-mcp")
 
 # Create FastMCP instance
-mcp = FastMCP("GIS MCP")
 
 def main():
     """Main entry point for the GIS MCP server."""
@@ -78,7 +75,7 @@ def main():
     try:
         # Start the MCP server
         print("Starting GIS MCP server...")
-        mcp.run()
+        gis_mcp.run()
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:

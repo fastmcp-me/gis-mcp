@@ -2,14 +2,14 @@
 import os
 import logging
 from typing import Any, Dict, List, Optional
-from mcp.server.fastmcp import mcp
+from .mcp import gis_mcp
 import geopandas as gpd
 import pandas as pd
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-@mcp.resource("gis://geopandas/io")
+@gis_mcp.resource("gis://geopandas/io")
 def get_geopandas_io() -> Dict[str, List[str]]:
     """List available GeoPandas I/O operations."""
     return {
@@ -24,7 +24,7 @@ def get_geopandas_io() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.resource("gis://geopandas/joins")
+@gis_mcp.resource("gis://geopandas/joins")
 def get_geopandas_joins() -> Dict[str, List[str]]:
     """List available GeoPandas join operations."""
     return {
@@ -37,7 +37,7 @@ def get_geopandas_joins() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.tool()
+@gis_mcp.tool()
 def read_file_gpd(file_path: str) -> Dict[str, Any]:
     """Reads a geospatial file and returns stats and a data preview."""
     try:
@@ -66,7 +66,7 @@ def read_file_gpd(file_path: str) -> Dict[str, Any]:
             "message": f"Failed to read file: {str(e)}"
         }
 
-@mcp.tool()
+@gis_mcp.tool()
 def append_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> Dict[str, Any]:
     """ Reads two shapefiles directly, concatenates them vertically."""
     try:
@@ -111,7 +111,7 @@ def append_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> 
         logger.error(f"Error processing shapefiles: {str(e)}")
         raise ValueError(f"Failed to process shapefiles: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def merge_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> Dict[str, Any]:
     """ 
     Merges two shapefiles based on common attribute columns,
@@ -168,7 +168,7 @@ def merge_gpd(shapefile1_path: str, shapefile2_path: str, output_path: str) -> D
         logger.error(f"Error merging shapefiles: {str(e)}")
         raise ValueError(f"Failed to merge shapefiles: {str(e)}")
 
-@mcp.tool()
+@gis_mcp.tool()
 def overlay_gpd(gdf1_path: str, gdf2_path: str, how: str = "intersection", output_path: str = None) -> Dict[str, Any]:
     """
     Overlay two GeoDataFrames using geopandas.overlay.
@@ -202,7 +202,7 @@ def overlay_gpd(gdf1_path: str, gdf2_path: str, how: str = "intersection", outpu
         logger.error(f"Error in overlay_gpd: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def dissolve_gpd(gdf_path: str, by: str = None, output_path: str = None) -> Dict[str, Any]:
     """
     Dissolve geometries by attribute using geopandas.dissolve.
@@ -232,7 +232,7 @@ def dissolve_gpd(gdf_path: str, by: str = None, output_path: str = None) -> Dict
         logger.error(f"Error in dissolve_gpd: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def explode_gpd(gdf_path: str, output_path: str = None) -> Dict[str, Any]:
     """
     Split multi-part geometries into single parts using geopandas.explode.
@@ -261,7 +261,7 @@ def explode_gpd(gdf_path: str, output_path: str = None) -> Dict[str, Any]:
         logger.error(f"Error in explode_gpd: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def clip_vector(gdf_path: str, clip_path: str, output_path: str = None) -> Dict[str, Any]:
     """
     Clip vector geometries using geopandas.clip.
@@ -294,7 +294,7 @@ def clip_vector(gdf_path: str, clip_path: str, output_path: str = None) -> Dict[
         logger.error(f"Error in clip_vector: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def sjoin_gpd(left_path: str, right_path: str, how: str = "inner", predicate: str = "intersects", output_path: str = None) -> Dict[str, Any]:
     """
     Spatial join between two GeoDataFrames using geopandas.sjoin.
@@ -329,7 +329,7 @@ def sjoin_gpd(left_path: str, right_path: str, how: str = "inner", predicate: st
         logger.error(f"Error in sjoin_gpd: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def sjoin_nearest_gpd(left_path: str, right_path: str, how: str = "left", max_distance: float = None, output_path: str = None) -> Dict[str, Any]:
     """
     Nearest neighbor spatial join using geopandas.sjoin_nearest.
@@ -367,7 +367,7 @@ def sjoin_nearest_gpd(left_path: str, right_path: str, how: str = "left", max_di
         logger.error(f"Error in sjoin_nearest_gpd: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def point_in_polygon(points_path: str, polygons_path: str, output_path: str = None) -> Dict[str, Any]:
     """
     Check if points are inside polygons using spatial join (predicate='within').
@@ -400,7 +400,7 @@ def point_in_polygon(points_path: str, polygons_path: str, output_path: str = No
         logger.error(f"Error in point_in_polygon: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@mcp.tool()
+@gis_mcp.tool()
 def write_file_gpd(gdf_path: str, output_path: str, driver: str = None) -> Dict[str, Any]:
     """
     Export a GeoDataFrame to a file (Shapefile, GeoJSON, GPKG, etc.).

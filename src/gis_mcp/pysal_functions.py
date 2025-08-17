@@ -4,12 +4,12 @@ import logging
 import numpy as np
 import geopandas as gpd
 from typing import Any, Dict, List, Optional
-from mcp.server.fastmcp import mcp
+from .mcp import gis_mcp
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-@mcp.resource("gis://operations/esda")
+@gis_mcp.resource("gis://operations/esda")
 def get_spatial_operations() -> Dict[str, List[str]]:
     """List available spatial analysis operations. This is for esda library. They are using pysal library."""
     return {
@@ -26,7 +26,7 @@ def get_spatial_operations() -> Dict[str, List[str]]:
         ]
     }
 
-@mcp.tool()
+@gis_mcp.tool()
 def getis_ord_g(
     shapefile_path: str,
     dependent_var: str = "LAND_USE",
@@ -133,7 +133,7 @@ def pysal_load_data(shapefile_path: str, dependent_var: str, target_crs: str, di
     return gdf, y, w, (effective_threshold, unit), None
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def morans_i(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
     """Compute Moran's I Global Autocorrelation Statistic."""
     gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
@@ -158,7 +158,7 @@ def morans_i(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: s
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def gearys_c(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
     """Compute Global Geary's C Autocorrelation Statistic."""
     gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
@@ -183,7 +183,7 @@ def gearys_c(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: s
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def gamma_statistic(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326", distance_threshold: float = 100000) -> Dict[str, Any]:
     """Compute Gamma Statistic for spatial autocorrelation."""
     gdf, y, w, (threshold, unit), err = pysal_load_data(shapefile_path, dependent_var, target_crs, distance_threshold)
@@ -207,7 +207,7 @@ def gamma_statistic(shapefile_path: str, dependent_var: str = "LAND_USE", target
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def moran_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
                 distance_threshold: float = 100000) -> Dict[str, Any]:
     """Local Moran's I."""
@@ -233,7 +233,7 @@ def moran_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def getis_ord_g_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
                       distance_threshold: float = 100000) -> Dict[str, Any]:
     """Local Getis-Ord G."""
@@ -258,7 +258,7 @@ def getis_ord_g_local(shapefile_path: str, dependent_var: str = "LAND_USE", targ
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def join_counts(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
                 distance_threshold: float = 100000) -> Dict[str, Any]:
     """Global Binary Join Counts."""
@@ -286,7 +286,7 @@ def join_counts(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def join_counts_local(shapefile_path: str, dependent_var: str = "LAND_USE", target_crs: str = "EPSG:4326",
                       distance_threshold: float = 100000) -> Dict[str, Any]:
     """Local Join Counts."""
@@ -309,7 +309,7 @@ def join_counts_local(shapefile_path: str, dependent_var: str = "LAND_USE", targ
     }
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def adbscan(shapefile_path: str, dependent_var: str = None, target_crs: str = "EPSG:4326",
             distance_threshold: float = 100000, eps: float = 0.1, min_samples: int = 5) -> Dict[str, Any]:
     """Adaptive DBSCAN clustering (requires coordinates, no dependent_var)."""
@@ -336,7 +336,7 @@ def adbscan(shapefile_path: str, dependent_var: str = None, target_crs: str = "E
         }
     }
 
-@mcp.tool()
+@gis_mcp.tool()
 def weights_from_shapefile(shapefile_path: str, contiguity: str = "queen", id_field: Optional[str] = None) -> Dict[str, Any]:
 
     """Create a spatial weights (W) from a shapefile using contiguity.
@@ -391,7 +391,7 @@ def weights_from_shapefile(shapefile_path: str, contiguity: str = "queen", id_fi
         logger.error(f"Error creating spatial weights from shapefile: {str(e)}")
         return {"status": "error", "message": f"Failed to create spatial weights: {str(e)}"}
 
-@mcp.tool()
+@gis_mcp.tool()
 def distance_band_weights(
     data_path: str,
     threshold: float,
@@ -462,7 +462,7 @@ def distance_band_weights(
         return {"status": "error", "message": f"Failed to create DistanceBand weights: {str(e)}"}
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def knn_weights(
     data_path: str,
     k: int,
@@ -530,7 +530,7 @@ def knn_weights(
         return {"status": "error", "message": f"Failed to create KNN weights: {str(e)}"}
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def build_transform_and_save_weights(
     data_path: str,
     method: str = "queen",
@@ -632,7 +632,7 @@ def build_transform_and_save_weights(
         return {"status": "error", "message": f"Failed to build and save weights: {str(e)}"}
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def ols_with_spatial_diagnostics_safe(
     data_path: str,
     y_field: str,
@@ -733,7 +733,7 @@ def ols_with_spatial_diagnostics_safe(
         return {"status": "error", "message": f"Failed to run OLS regression: {str(e)}"}
 
 
-@mcp.tool()
+@gis_mcp.tool()
 def build_and_transform_weights(
     data_path: str,
     method: str = "queen",
