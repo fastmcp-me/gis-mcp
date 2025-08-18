@@ -13,7 +13,7 @@ theme:
     - toc.integrate
     - search.suggest
     - search.highlight
-  logo: docs/logo.png
+  logo: docs/Logo.png
   favicon: docs/favicon.ico
 
 nav:
