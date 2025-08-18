@@ -4,9 +4,9 @@
   <h3>✨ Want to perform accurate geospatial analysis in your chatbot? ✨</h3>
   <p><strong>Install GIS-MCP and transform your AI's spatial capabilities!</strong></p>
   <br/>
-  <img src="docs/logo.png" alt="GIS MCP Server Logo" width="300"/>
+  <img src="docs/Logo.png" alt="GIS MCP Server Logo" width="300"/>
   <br/>
-  <img src="docs/gis-mcp.png" alt="GIS MCP Server Logo" width="300"/>
+  <br/>
 </div>
 
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries, enabling AI assistants to perform geospatial operations and transformations.
