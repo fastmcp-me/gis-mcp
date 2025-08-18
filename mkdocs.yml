@@ -13,8 +13,8 @@ theme:
     - toc.integrate
     - search.suggest
     - search.highlight
-  logo: docs/Logo.png
-  favicon: docs/favicon.ico
+  logo: Logo.png
+  favicon: favicon.ico
 
 nav:
   - HOME: index.md
