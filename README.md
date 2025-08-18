@@ -6,6 +6,7 @@
   <br/>
   <img src="docs/Logo.png" alt="GIS MCP Server Logo" width="300"/>
   <br/>
+  <br/>
 </div>
 
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to GIS operations using GIS libraries, enabling AI assistants to perform geospatial operations and transformations.
