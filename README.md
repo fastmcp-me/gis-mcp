@@ -521,7 +521,7 @@ Join our Discord community for discussions, updates, and support:
 
 [![Join our Discord](https://img.shields.io/badge/Discord-Join%20our%20community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dzkXZsZK)
 
-## 👥 Contributors {#-contributors}
+## 👥 Contributors
 
 <a href="https://github.com/mahdin75/gis-mcp/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=mahdin75/gis-mcp" />
@@ -534,10 +534,15 @@ Made with [contrib.rocks](https://contrib.rocks).
 ## 🏆 Badges
 
 <div align="center">
+
+  [![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mahdin75/gis-mcp)](https://archestra.ai/mcp-catalog/mahdin75__gis-mcp)
+<br/></br>
+  
   <a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
     <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
   </a>
   <br/><br/><br/>
+  
   <a href="https://mcp.so/server/gis-mcp-server/mahdin75">
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
   </a>
