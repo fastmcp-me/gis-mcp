@@ -2,6 +2,10 @@
 
 ### Install via pip (with uv)
 
+This video teaches you the installation of GIS MCP Server on your windows and Claude Desktop:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1u_ra1Wp4es" frameborder="0" allowfullscreen></iframe>
+
 1. Install uv and create a virtual environment (Python 3.10+):
 
 ```bash
