@@ -11,6 +11,8 @@ import argparse
 import sys
 from typing import Any, Dict, List, Optional, Union
 from .mcp import gis_mcp
+from .data import administrative_boundaries
+
 
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output
