@@ -12,6 +12,7 @@ import sys
 from typing import Any, Dict, List, Optional, Union
 from .mcp import gis_mcp
 from .data import administrative_boundaries
+from .data import climate
 
 
 import warnings

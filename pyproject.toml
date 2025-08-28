@@ -49,9 +49,13 @@ dependencies = [
 administrative-boundaries = [
     "pygadm>=0.5.0"
 ]
+climate = [
+    "cdsapi>=0.6.1"
+]
 
 all = [
-    "pygadm>=0.5.0"
+    "pygadm>=0.5.0",
+    "cdsapi==0.7.6"
 ]
 
 [project.scripts]
