@@ -46,6 +46,8 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [GeoPandas Functions](#-geopandas-functions-11-total)
   - [Rasterio Functions](#-rasterio-functions-18-total)
   - [PySAL Functions](#-pysal-functions-15-total)
+  - [Administrative Boundaries Functions](#-administrative-boundaries-functions)
+  - [Climate Data Functions](#-climate-data-functions)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -435,6 +437,18 @@ This section provides a comprehensive list of all available functions organized 
 - `build_transform_and_save_weights` - Build, transform, and save weights
 - `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
 - `build_and_transform_weights` - Build and transform weights
+
+### 🔷 Administrative Boundaries Functions
+
+**Boundary Download:**
+
+- `download_boundaries` - Download GADM administrative boundaries and save as GeoJSON
+
+### 🔷 Climate Data Functions
+
+**Climate Data Download:**
+
+- `download_climate_data` - Download climate data (ERA5 or other CDS datasets)
 
 **Total Functions Available: 84**
 
