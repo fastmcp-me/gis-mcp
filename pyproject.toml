@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gis-mcp"
-version = "0.5.0"
+version = "0.6.0"
 description = "A Model Context Protocol (MCP) server implementation for GIS operations using GIS libraries"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,13 +13,13 @@ license = {file = "LICENSE"}
 authors = [
     {name = "Mahdi Nazari Ashani"},
     {name = "Shahab Esfandiar"},
-    {name = "Homa Ganjali"},
-    {name = "Yasin Mohammadi"},
     {name = "Saba Kazemi"},
+    {name = "Yasin Mohammadi"},
+    {name = "Homa Ganjali"},
     {name = "GIS MCP Server Contributors"},
 ]
 
-keywords = ["mcp", "gis", "llm", "agentic AI", "geospatial", "ogc", "pyproj", "shapely", "geopandas", "rasterio", "pysal"]
+keywords = ["mcp", "gis", "llm", "agentic AI", "geospatial", "ogc", "pyproj", "shapely", "geopandas", "rasterio", "pysal", "pygadm", "cdsapi"]
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -49,6 +49,7 @@ dependencies = [
 administrative-boundaries = [
     "pygadm>=0.5.0"
 ]
+
 climate = [
     "cdsapi>=0.6.1"
 ]

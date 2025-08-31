@@ -1,6 +1,6 @@
 """GIS MCP Server - A Model Context Protocol server for GIS operations."""
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 from .geopandas_functions import *
 from .shapely_functions import *
