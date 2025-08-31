@@ -230,6 +230,7 @@ html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
       <a href="getting-started/">Getting Started</a>
       <a href="install/">Installations</a>
       <a href="api/shapely/">API Reference</a>
+      <a href="examples/">Examples</a>
       <a href="contributing/">Contributing</a>
       <a href="https://github.com/mahdin75/gis-mcp" target="_blank" rel="noopener">GitHub</a>
     </nav>
