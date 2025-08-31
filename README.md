@@ -510,6 +510,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [GeoPandas](https://github.com/geopandas/geopandas) - Python package for working with geospatial data
 - [Rasterio](https://github.com/rasterio/rasterio) - Python package for reading and writing geospatial raster data
 - [PySAL](https://github.com/pysal/pysal) - PySAL, the Python spatial analysis library for geospatial data science with an emphasis on geospatial vector data written in Python.
+- [cdsapi](https://github.com/ecmwf/cdsapi) - Python API to access the Copernicus Climate Data Store (CDS).
+- [pygadm](https://github.com/12rambau/pygadm) - Easy access to administrative boundary defined by GADM from Python scripts
 
 ## 📞 Support
 
@@ -535,9 +537,9 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 <div align="center">
 
-  [![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mahdin75/gis-mcp)](https://archestra.ai/mcp-catalog/mahdin75__gis-mcp)
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/mahdin75/gis-mcp)](https://archestra.ai/mcp-catalog/mahdin75__gis-mcp)
 <br/></br>
-  
+
   <a href="https://glama.ai/mcp/servers/@mahdin75/gis-mcp">
     <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/gis-mcp/badge" alt="GIS Server MCP server" />
   </a>
