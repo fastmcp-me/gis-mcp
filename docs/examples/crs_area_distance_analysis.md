@@ -47,6 +47,4 @@ In urban planning and cadastral management, confirming the **CRS** and ensuring 
 
 For a deeper understanding of how these operations work in practice, check out this YouTube video:
 
-[![YouTube Video](https://img.youtube.com/vi/0EqHwoT_TFo/0.jpg)](https://youtu.be/0EqHwoT_TFo)
-
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0EqHwoT_TFo" frameborder="0" allowfullscreen></iframe>

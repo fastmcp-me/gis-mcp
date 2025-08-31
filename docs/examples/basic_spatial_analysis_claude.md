@@ -57,6 +57,4 @@ By performing a **buffer operation** around a river's geometry and checking the 
 
 For a deeper understanding of how these operations work in practice, check out this YouTube video:
 
-[![YouTube Video](https://img.youtube.com/vi/nC5H6uDtABs/0.jpg)](https://youtu.be/nC5H6uDtABs)
-
 <iframe width="560" height="315" src="https://www.youtube.com/embed/nC5H6uDtABs" frameborder="0" allowfullscreen></iframe>
