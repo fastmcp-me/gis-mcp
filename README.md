@@ -42,14 +42,14 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [Development Installation](#-development-installation)
 - [Available Functions](#-available-functions)
   - [Shapely Functions](#-shapely-functions-29-total)
-  - [PyProj Functions](#-pyproj-functions-11-total)
-  - [GeoPandas Functions](#-geopandas-functions-11-total)
-  - [Rasterio Functions](#-rasterio-functions-18-total)
+  - [PyProj Functions](#-pyproj-functions-13-total)
+  - [GeoPandas Functions](#-geopandas-functions-13-total)
+  - [Rasterio Functions](#-rasterio-functions-20-total)
   - [PySAL Functions](#-pysal-functions-15-total)
-  - [Administrative Boundaries Functions](#-administrative-boundaries-functions)
-  - [Climate Data Functions](#-climate-data-functions)
-  - [Ecology Data Functions](#-ecology-data-functions)
-  - [Movement Data Functions](#-movement-data-functions)
+  - [Administrative Boundaries Functions](#-administrative-boundaries-functions-1-total)
+  - [Climate Data Functions](#-climate-data-functions-1-total)
+  - [Ecology Data Functions](#-ecology-data-functions-2-total)
+  - [Movement Data Functions](#-movement-data-functions-2-total)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -335,7 +335,7 @@ This section provides a comprehensive list of all available functions organized 
 - `geometry_to_geojson` - Convert to GeoJSON
 - `geojson_to_geometry` - Convert from GeoJSON
 
-### 🔷 PyProj Functions (11 total)
+### 🔷 PyProj Functions (13 total)
 
 **Coordinate Transformations:**
 
@@ -357,7 +357,7 @@ This section provides a comprehensive list of all available functions organized 
 - `calculate_geodetic_point` - Calculate point at distance/azimuth
 - `calculate_geodetic_area` - Calculate area on ellipsoid
 
-### 🔷 GeoPandas Functions (11 total)
+### 🔷 GeoPandas Functions (13 total)
 
 **I/O Operations:**
 
@@ -379,7 +379,7 @@ This section provides a comprehensive list of all available functions organized 
 - `sjoin_nearest_gpd` - Nearest neighbor spatial joins
 - `point_in_polygon` - Point-in-polygon tests
 
-### 🔷 Rasterio Functions (18 total)
+### 🔷 Rasterio Functions (20 total)
 
 **Basic Raster Operations:**
 
@@ -440,26 +440,26 @@ This section provides a comprehensive list of all available functions organized 
 - `ols_with_spatial_diagnostics_safe` - OLS regression with spatial diagnostics
 - `build_and_transform_weights` - Build and transform weights
 
-### 🔷 Administrative Boundaries Functions
+### 🔷 Administrative Boundaries Functions (1 total)
 
 **Boundary Download:**
 
 - `download_boundaries` - Download GADM administrative boundaries and save as GeoJSON
 
-### 🔷 Climate Data Functions
+### 🔷 Climate Data Functions (1 total)
 
 **Climate Data Download:**
 
 - `download_climate_data` - Download climate data (ERA5 or other CDS datasets)
 
-### 🔷 Ecology Data Functions
+### 🔷 Ecology Data Functions (2 total)
 
 **Ecology Data Download and Info:**
 
 - `get_species_info` – Retrieve taxonomic information for a given species name
 - `download_species_occurrences` – Download occurrence records for a given species and save as JSON
 
-### 🔷 Movement Data Functions
+### 🔷 Movement Data Functions (2 total)
 
 **Movement Data Download and Routing (via [OSMnx](https://osmnx.readthedocs.io/en/stable/)):**
 
