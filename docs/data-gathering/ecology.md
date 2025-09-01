@@ -1,6 +1,6 @@
 ### Ecology Data (Currently GBIF via `pygbif`)
 
-Currentlu, the **Ecology Data** tool in GIS-MCP allows you to download species occurrence records and taxonomic information from the [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org/).
+Currently, the **Ecology Data** tool in GIS-MCP allows you to download species occurrence records and taxonomic information from the [Global Biodiversity Information Facility (GBIF)](https://www.gbif.org/).
 
 ---
 
