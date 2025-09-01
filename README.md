@@ -48,6 +48,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [PySAL Functions](#-pysal-functions-15-total)
   - [Administrative Boundaries Functions](#-administrative-boundaries-functions)
   - [Climate Data Functions](#-climate-data-functions)
+  - [Ecology Data Functions](#-ecology-data-functions)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -450,7 +451,14 @@ This section provides a comprehensive list of all available functions organized 
 
 - `download_climate_data` - Download climate data (ERA5 or other CDS datasets)
 
-**Total Functions Available: 84**
+### 🔷 Ecology Data Functions
+
+**Ecology Data Download and Info:**
+
+- `get_species_info` – Retrieve taxonomic information for a given species name
+- `download_species_occurrences` – Download occurrence records for a given species and save as JSON
+
+**Total Functions Available: 86**
 
 ## 🛠 Client Development
 
@@ -526,6 +534,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [PySAL](https://github.com/pysal/pysal) - PySAL, the Python spatial analysis library for geospatial data science with an emphasis on geospatial vector data written in Python.
 - [cdsapi](https://github.com/ecmwf/cdsapi) - Python API to access the Copernicus Climate Data Store (CDS).
 - [pygadm](https://github.com/12rambau/pygadm) - Easy access to administrative boundary defined by GADM from Python scripts
+- [pygbif](https://github.com/gbif/pygbif) - Python client for the GBIF API (ecology and biodiversity data)
 
 ## 📞 Support
 

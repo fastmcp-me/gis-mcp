@@ -19,7 +19,7 @@ authors = [
     {name = "GIS MCP Server Contributors"},
 ]
 
-keywords = ["mcp", "gis", "llm", "agentic AI", "geospatial", "ogc", "pyproj", "shapely", "geopandas", "rasterio", "pysal", "pygadm", "cdsapi"]
+keywords = ["mcp", "gis", "llm", "agentic AI", "geospatial", "ogc", "pyproj", "shapely", "geopandas", "rasterio", "pysal", "pygadm", "cdsapi", "pygbif"]
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -54,9 +54,14 @@ climate = [
     "cdsapi>=0.6.1"
 ]
 
+ecology = [
+    "pygbif>=0.6.4"
+]
+
 all = [
     "pygadm>=0.5.0",
-    "cdsapi==0.7.6"
+    "cdsapi==0.7.6",
+    "pygbif>=0.6.4"
 ]
 
 [project.scripts]

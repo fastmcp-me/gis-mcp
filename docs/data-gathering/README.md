@@ -5,5 +5,6 @@ Currently covered:
 
 - Administrative Boundaries (via `pygadm`)
 - Climate (via `cdsapi`)
+- Ecology (via `pygbif`)
 
 Each page lists requirements, parameters, and natural-language usage examples you can paste into Claude Desktop.
