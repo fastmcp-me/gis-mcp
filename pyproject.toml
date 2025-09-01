@@ -58,10 +58,15 @@ ecology = [
     "pygbif>=0.6.4"
 ]
 
+movement = [
+    "osmnx>=2.0.0"
+]
+
 all = [
     "pygadm>=0.5.0",
     "cdsapi==0.7.6",
-    "pygbif>=0.6.4"
+    "pygbif>=0.6.4",
+    "osmnx>=2.0.0"
 ]
 
 [project.scripts]

@@ -11,6 +11,12 @@ This section contains practical, step-by-step examples for using GIS MCP Server 
   - Includes a video walkthrough.
 
 - [**Example 2: CRS Check, Reprojection, Area & Distance Calculations**](crs_area_distance_analysis.md)
+
   - Check and transform the CRS of a parcel shapefile, calculate area by land use, and measure distances between centroids.
   - Useful for urban planning, cadastral management, and spatial QA.
   - Includes a video walkthrough.
+
+- [**Example 3: Movement Analysis (OSMnx)**](movement_example.md)
+
+  - Download and analyze street networks, calculate shortest paths between points, and visualize movement networks.
+  - Useful for urban mobility, routing, and network analysis.

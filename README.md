@@ -49,6 +49,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [Administrative Boundaries Functions](#-administrative-boundaries-functions)
   - [Climate Data Functions](#-climate-data-functions)
   - [Ecology Data Functions](#-ecology-data-functions)
+  - [Movement Data Functions](#-movement-data-functions)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -458,6 +459,13 @@ This section provides a comprehensive list of all available functions organized 
 - `get_species_info` – Retrieve taxonomic information for a given species name
 - `download_species_occurrences` – Download occurrence records for a given species and save as JSON
 
+### 🔷 Movement Data Functions
+
+**Movement Data Download and Routing (via [OSMnx](https://osmnx.readthedocs.io/en/stable/)):**
+
+- `download_street_network` – Download a street network for a given place and save as GraphML
+- `calculate_shortest_path` – Calculate the shortest path between two points using a saved street network
+
 **Total Functions Available: 86**
 
 ## 🛠 Client Development
@@ -535,6 +543,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [cdsapi](https://github.com/ecmwf/cdsapi) - Python API to access the Copernicus Climate Data Store (CDS).
 - [pygadm](https://github.com/12rambau/pygadm) - Easy access to administrative boundary defined by GADM from Python scripts
 - [pygbif](https://github.com/gbif/pygbif) - Python client for the GBIF API (ecology and biodiversity data)
+- [OSMnx](https://osmnx.readthedocs.io/en/stable/) - Python package for downloading, modeling, and analyzing street networks and urban features from OpenStreetMap
 
 ## 📞 Support
 
