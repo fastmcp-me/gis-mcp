@@ -14,20 +14,29 @@ def get_movement_operations() -> dict:
     return {"operations": ["download_street_network", "calculate_shortest_path"]}
 
 @gis_mcp.tool()
-def download_street_network(place: str, network_type: str = "drive") -> Dict[str, Any]:
+def download_street_network(place: str, network_type: str = "drive", file_path: str = None, custom_filter: str = None) -> Dict[str, Any]:
     """
     Download a street network for a given place using OSMnx.
     Args:
         place: Name of the place (e.g., "Los Angeles, California, USA")
-        network_type: Type of network ("drive", "walk", "bike", etc.)
+        network_type: Type of network ("drive", "walk", "bike", etc.). Ignored if custom_filter is provided.
+        file_path: Optional. Full path where the GraphML file will be saved. If not set, saves to default location.
+        custom_filter: Optional. OSMnx custom filter string to specify which roads to download (e.g., '["highway"~"motorway|trunk|primary"]').
     Returns:
         NetworkX graph as GraphML file path or error message.
     """
     try:
-        G = ox.graph_from_place(place, network_type=network_type)
-        out_dir = Path(__file__).resolve().parent / "movement_data"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        file_path = out_dir / f"{place.replace(',', '').replace(' ', '_')}_{network_type}.graphml"
+        if custom_filter is not None:
+            G = ox.graph_from_place(place, custom_filter=custom_filter)
+        else:
+            G = ox.graph_from_place(place, network_type=network_type)
+        if file_path is not None:
+            file_path = Path(file_path)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+        else:
+            out_dir = Path(__file__).resolve().parent / "movement_data"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            file_path = out_dir / f"{place.replace(',', '').replace(' ', '_')}_{network_type if custom_filter is None else 'custom'}.graphml"
         ox.save_graphml(G, file_path)
         logger.info(f"Saved street network for {place} to {file_path}")
         return {"status": "success", "file_path": str(file_path)}

@@ -26,11 +26,11 @@ pip install gis-mcp[movement]
 **Prompt:**
 
 ```bash
-Using gis-mcp download the street network for Berlin, Germany for driving and save as GraphML.
+download the street network for Berlin and save as Graph file. Please use gis mcp tools
 ```
 
 **Prompt:**
 
 ```bash
-Using gis-mcp calculate the shortest path between (52.5200, 13.4050) and (52.5155, 13.3777) using the saved Berlin driving network.
+Use gis-mcp. calculate the shortest path between (52.5200, 13.4050) and (52.5155, 13.3777) using the saved Berlin driving network.
 ```
