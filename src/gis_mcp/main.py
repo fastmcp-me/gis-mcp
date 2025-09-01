@@ -11,8 +11,31 @@ import argparse
 import sys
 from typing import Any, Dict, List, Optional, Union
 from .mcp import gis_mcp
-from .data import administrative_boundaries
-from .data import climate
+try:
+    from .data import administrative_boundaries
+except ImportError as e:
+    administrative_boundaries = None
+    import logging
+    logging.warning(f"administrative_boundaries module could not be imported: {e}. Install with 'pip install gis-mcp[administrative-boundaries]' if you need this feature.")
+try:
+    from .data import climate
+except ImportError as e:
+    climate = None
+    import logging
+    logging.warning(f"climate module could not be imported: {e}. Install with 'pip install gis-mcp[climate]' if you need this feature.")
+try:
+    from .data import ecology
+except ImportError as e:
+    ecology = None
+    import logging
+    logging.warning(f"ecology module could not be imported: {e}. Install with 'pip install gis-mcp[ecology]' if you need this feature.")
+try:
+    from .data import movement
+except ImportError as e:
+    movement = None
+    import logging
+    logging.warning(f"movement module could not be imported: {e}. Install with 'pip install gis-mcp[movement]' if you need this feature.")
+
 
 
 import warnings

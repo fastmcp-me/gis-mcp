@@ -15,6 +15,13 @@ ALIASES = {
     "IR": "Iran",
 }
 
+try:
+    import pygadm
+    _pygadm_available = True
+except ImportError:
+    pygadm = None
+    _pygadm_available = False
+
 @gis_mcp.resource("gis://operations/administrative_boundaries")
 def get_administrative_boundaries_operations() -> dict:
     return {"operations": ["download_boundaries"]}
@@ -33,6 +40,8 @@ def download_boundaries(region: str, level: int = 1, path: Optional[str] = None)
         {"status": "success", "file_path": "..."} or {"status": "error", "message": "..."}
     """
     try:
+        if not _pygadm_available:
+            raise ImportError("pygadm is not installed. Please install with 'pip install gis-mcp[administrative-boundaries]'.")
         region = ALIASES.get(region.upper(), region)  
         out_dir = Path(path) if path else DEFAULT_PATH
         out_dir.mkdir(parents=True, exist_ok=True)
