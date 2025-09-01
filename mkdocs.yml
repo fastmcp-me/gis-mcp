@@ -125,6 +125,8 @@ nav:
               - Overview: data-gathering/README.md
               - Administrative Boundaries: data-gathering/administrative_boundaries.md
               - Climate: data-gathering/climate.md
+              - Ecology: data-gathering/ecology.md
+              - Movement: data-gathering/movement.md
       - examples:
           - Overview: examples/README.md
           - Basic Spatial Analysis (claude): examples/basic_spatial_analysis_claude.md
