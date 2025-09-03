@@ -20,3 +20,9 @@ This section contains practical, step-by-step examples for using GIS MCP Server 
 
   - Download and analyze street networks, calculate shortest paths between points, and visualize movement networks.
   - Useful for urban mobility, routing, and network analysis.
+  - Includes a video walkthrough.
+
+- [**Example 4: Climate Data Download & Analysis**](climate_data_example.md)
+
+  - Download, visualize, and analyze climate raster data (e.g., Temperature) using GIS MCP Server & Claude Desktop.
+  - Learn how to clip rasters, calculate zonal statistics, and export results for further analysis.
