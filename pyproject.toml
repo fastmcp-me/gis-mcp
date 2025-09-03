@@ -5,15 +5,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gis-mcp"
-version = "0.7.0"
+version = "0.8.0"
 description = "A Model Context Protocol (MCP) server implementation for GIS operations using GIS libraries"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [
     {name = "Mahdi Nazari Ashani"},
-    {name = "Shahab Esfandiar"},
     {name = "Saba Kazemi"},
+    {name = "Shahab Esfandiar"},
     {name = "Yasin Mohammadi"},
     {name = "Homa Ganjali"},
     {name = "GIS MCP Server Contributors"},

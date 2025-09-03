@@ -534,18 +534,20 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🔗 Related Projects
 
-| Project Name                                                                   | Category                   | Description                                                                                                   |
-| ------------------------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| [Model Context Protocol](https://github.com/anthropics/model-context-protocol) | MCP Related                | The core MCP implementation                                                                                   |
-| [Shapely](https://github.com/shapely/shapely)                                  | Geospatial Analysis        | Python package for manipulation and analysis of geometric objects                                             |
-| [PyProj](https://github.com/pyproj4/pyproj)                                    | Geospatial Analysis        | Python interface to PROJ library                                                                              |
-| [GeoPandas](https://github.com/geopandas/geopandas)                            | Geospatial Analysis        | Python package for working with geospatial data                                                               |
-| [Rasterio](https://github.com/rasterio/rasterio)                               | Geospatial Analysis        | Python package for reading and writing geospatial raster data                                                 |
-| [PySAL](https://github.com/pysal/pysal)                                        | Geospatial Analysis        | Python spatial analysis library for geospatial data science                                                   |
-| [cdsapi](https://github.com/ecmwf/cdsapi)                                      | Geospatial Data Collecting | Python API to access the Copernicus Climate Data Store (CDS)                                                  |
-| [pygadm](https://github.com/12rambau/pygadm)                                   | Geospatial Data Collecting | Easy access to administrative boundary defined by GADM from Python scripts                                    |
-| [pygbif](https://github.com/gbif/pygbif)                                       | Geospatial Data Collecting | Python client for the GBIF API (ecology and biodiversity data)                                                |
-| [OSMnx](https://osmnx.readthedocs.io/en/stable/)                               | Geospatial Data Collecting | Python package for downloading, modeling, and analyzing street networks and urban features from OpenStreetMap |
+| Project Name                                                                                        | Category                   | Description                                                                                                   |
+| --------------------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [Model Context Protocol](https://github.com/anthropics/model-context-protocol)                      | MCP Related                | The core MCP implementation                                                                                   |
+| [Shapely](https://github.com/shapely/shapely)                                                       | Geospatial Analysis        | Python package for manipulation and analysis of geometric objects                                             |
+| [PyProj](https://github.com/pyproj4/pyproj)                                                         | Geospatial Analysis        | Python interface to PROJ library                                                                              |
+| [GeoPandas](https://github.com/geopandas/geopandas)                                                 | Geospatial Analysis        | Python package for working with geospatial data                                                               |
+| [Rasterio](https://github.com/rasterio/rasterio)                                                    | Geospatial Analysis        | Python package for reading and writing geospatial raster data                                                 |
+| [PySAL](https://github.com/pysal/pysal)                                                             | Geospatial Analysis        | Python spatial analysis library for geospatial data science                                                   |
+| [cdsapi](https://github.com/ecmwf/cdsapi)                                                           | Geospatial Data Collecting | Python API to access the Copernicus Climate Data Store (CDS)                                                  |
+| [pygadm](https://github.com/12rambau/pygadm)                                                        | Geospatial Data Collecting | Easy access to administrative boundary defined by GADM from Python scripts                                    |
+| [pygbif](https://github.com/gbif/pygbif)                                                            | Geospatial Data Collecting | Python client for the GBIF API (ecology and biodiversity data)                                                |
+| [OSMnx](https://osmnx.readthedocs.io/en/stable/)                                                    | Geospatial Data Collecting | Python package for downloading, modeling, and analyzing street networks and urban features from OpenStreetMap |
+| [pystac-client](https://github.com/stac-utils/pystac-client)                                        | Geospatial Data Collecting | Python client for STAC catalogs; search and access spatiotemporal assets                                      |
+| [Planetary Computer SDK for Python](https://github.com/microsoft/planetary-computer-sdk-for-python) | Geospatial Data Collecting | Python SDK for Microsoft Planetary Computer; auth and helpers for STAC/COGs                                   |
 
 ## 📞 Support
 
