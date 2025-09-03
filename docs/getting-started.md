@@ -28,7 +28,7 @@ uv pip install gis-mcp
 gis-mcp
 ```
 
-### Connect to an MCP client (optional)
+### Connect to an MCP client
 
 Claude Desktop (Windows):
 
@@ -90,6 +90,34 @@ Notes
 
 - Replace `YourUsername` with your actual username
 - Restart your IDE after adding configuration
+
+### Optional Features & Extras
+
+GIS MCP Server supports several optional features for specialized workflows. You can install these extras using pip with square brackets, e.g.:
+
+```bash
+uv pip install "gis-mcp[climate]"
+```
+
+Available extras:
+
+- **climate**: For climate data access and processing (installs `cdsapi`)
+- **ecology**: For ecological and biodiversity data (installs `pygbif`)
+- **administrative-boundaries**: For working with global administrative boundaries (installs `pygadm`)
+- **movement**: For movement and network analysis (installs `osmnx`)
+- **satellite-imagery**: For searching and processing satellite imagery (installs `pystac-client`, `planetary-computer`, `xarray`, `stackstac`, `requests`)
+- **land-cover**: For land cover data workflows (same as satellite-imagery)
+- **all**: Installs all optional dependencies for full functionality
+
+Example to install with multiple extras:
+
+```bash
+uv pip install "gis-mcp[climate,ecology,movement]"
+```
+
+See the `pyproject.toml` or documentation for the full list of extras and their included packages.
+
+For more information on fetching external datasets (climate, ecology, movement, satellite imagery, and more), see the [Data Gathering guide](data-gathering/README.md).
 
 ### Next steps
 
