@@ -7,5 +7,7 @@ Currently covered:
 - Climate (via `cdsapi`)
 - Ecology (via `pygbif`)
 - Movement (via `osmnx`)
+- Satellite Imagery (via `pystac-client`)
+- Land Cover (via `pystac-client`)
 
 Each page lists requirements, parameters, and natural-language usage examples you can paste into Claude Desktop.
