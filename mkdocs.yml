@@ -127,6 +127,8 @@ nav:
               - Climate: data-gathering/climate.md
               - Ecology: data-gathering/ecology.md
               - Movement: data-gathering/movement.md
+              - Satellite Imagery: data-gathering/satellite_imagery.md
+              - Land Cover: data-gathering/land_cover.md
       - examples:
           - Overview: examples/README.md
           - Basic Spatial Analysis (claude): examples/basic_spatial_analysis_claude.md

@@ -5,11 +5,9 @@ Shapely and PyProj libraries, enabling AI assistants to perform geospatial opera
 and transformations.
 """
 
-import json
 import logging
 import argparse
 import sys
-from typing import Any, Dict, List, Optional, Union
 from .mcp import gis_mcp
 try:
     from .data import administrative_boundaries
@@ -54,40 +52,13 @@ except ImportError as e:
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output
 
-# Import library-specific functions
-from .geopandas_functions import (
-    read_file_gpd, append_gpd, merge_gpd, overlay_gpd, dissolve_gpd, 
-    explode_gpd, clip_vector, sjoin_gpd, sjoin_nearest_gpd, 
-    point_in_polygon, write_file_gpd
-)
-from .shapely_functions import (
-    buffer, intersection, union, difference, symmetric_difference,
-    convex_hull, envelope, minimum_rotated_rectangle, get_centroid,
-    get_bounds, get_coordinates, get_geometry_type, rotate_geometry,
-    scale_geometry, translate_geometry, triangulate_geometry, voronoi,
-    unary_union_geometries, get_length, get_area, is_valid, make_valid,
-    simplify, snap_geometry, nearest_point_on_geometry, normalize_geometry,
-    geometry_to_geojson, geojson_to_geometry
-)
-from .rasterio_functions import (
-    metadata_raster, get_raster_crs, clip_raster_with_shapefile,
-    resample_raster, reproject_raster, weighted_band_sum, concat_bands,
-    raster_algebra, compute_ndvi, raster_histogram, tile_raster,
-    raster_band_statistics, extract_band, zonal_statistics,
-    reclassify_raster, focal_statistics, hillshade, write_raster
-)
-from .pyproj_functions import (
-    transform_coordinates, project_geometry, get_crs_info,
-    get_available_crs, get_utm_zone, get_utm_crs, get_geocentric_crs,
-    get_geod_info, calculate_geodetic_distance, calculate_geodetic_point,
-    calculate_geodetic_area
-)
-from .pysal_functions import (
-    getis_ord_g, morans_i, gearys_c, gamma_statistic, moran_local,
-    getis_ord_g_local, join_counts, join_counts_local, adbscan,
-    weights_from_shapefile, distance_band_weights, knn_weights,
-    build_transform_and_save_weights, ols_with_spatial_diagnostics_safe,
-    build_and_transform_weights
+# Import tool modules to register MCP tools via decorators
+from . import (
+    geopandas_functions,
+    shapely_functions,
+    rasterio_functions,
+    pyproj_functions,
+    pysal_functions,
 )
 
 # Configure logging
