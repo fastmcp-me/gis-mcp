@@ -50,6 +50,8 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [Climate Data Functions](#-climate-data-functions-1-total)
   - [Ecology Data Functions](#-ecology-data-functions-2-total)
   - [Movement Data Functions](#-movement-data-functions-2-total)
+  - [Land Cover Data Functions](#-land-cover-data-functions-2-total)
+  - [Satellite Imagery Functions](#-satellite-imagery-functions-1-total)
 - [Client Development](#-client-development)
 - [Planned Features](#-planned-features)
 - [Contributing](#-contributing)
@@ -466,7 +468,20 @@ This section provides a comprehensive list of all available functions organized 
 - `download_street_network` – Download a street network for a given place and save as GraphML
 - `calculate_shortest_path` – Calculate the shortest path between two points using a saved street network
 
-**Total Functions Available: 86**
+### 🔷 Land Cover Data Functions (2 total)
+
+**Land Cover from Planetary Computer:**
+
+- `download_worldcover` – Download ESA WorldCover for AOI/year; optional crop and reprojection
+- `compute_s2_ndvi` – Compute NDVI from Sentinel-2 L2A; crop and reprojection supported
+
+### 🔷 Satellite Imagery Functions (1 total)
+
+**STAC-based Satellite Download:**
+
+- `download_satellite_imagery` – Download and stack bands from STAC items (e.g., Sentinel-2, Landsat), with optional crop and reprojection
+
+**Total Functions Available: 89**
 
 ## 🛠 Client Development
 
