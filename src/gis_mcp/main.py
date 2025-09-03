@@ -36,6 +36,12 @@ except ImportError as e:
     import logging
     logging.warning(f"movement module could not be imported: {e}. Install with 'pip install gis-mcp[movement]' if you need this feature.")
 
+try:
+    from .data import satellite_imagery
+except ImportError as e:
+    satellite_imagery = None
+    import logging
+    logging.warning(f"satellite_imagery module could not be imported: {e}. Install with 'pip install gis-mcp[satellite_imagery]' if you need this feature.")
 
 
 import warnings
