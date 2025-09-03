@@ -43,6 +43,13 @@ except ImportError as e:
     import logging
     logging.warning(f"satellite_imagery module could not be imported: {e}. Install with 'pip install gis-mcp[satellite_imagery]' if you need this feature.")
 
+try:
+    from .data import land_cover
+except ImportError as e:
+    land_cover = None
+    import logging
+    logging.warning(f"land_cover module could not be imported: {e}. Install with 'pip install gis-mcp[land_cover]' if you need this feature.")
+
 
 import warnings
 warnings.filterwarnings('ignore')  # Suppress warnings for cleaner output

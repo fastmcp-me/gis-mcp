@@ -70,6 +70,14 @@ satellite-imagery = [
     "requests>=2.31",
 ]
 
+land-cover = [
+    "pystac-client>=0.7.6",
+    "planetary-computer>=1.0.0",
+    "xarray>=2023.1.0",
+    "stackstac>=0.5.0",
+    "requests>=2.31",
+]
+
 all = [
     "pygadm>=0.5.0",
     "cdsapi==0.7.6",
